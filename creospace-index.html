@@ -1,0 +1,2075 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Creospace — Project Intelligence Platform</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ── FONT STACKS ── */
+:root{
+  --fd:'Cormorant Garamond',Georgia,serif;
+  --fb:'DM Sans',system-ui,sans-serif;
+  --gold:#c8a96e;--gold2:#a8854c;
+  --green:#7ec98c;--purple:#a482dc;--blue:#64a0dc;--red:#e07a6b;--orange:#e8935a;
+  --transition-theme:background 0.28s ease,color 0.28s ease,border-color 0.28s ease,box-shadow 0.28s ease;
+}
+
+/* ── DARK THEME (default) ── */
+[data-theme="dark"]{
+  --bg:#0d0b09;--bg2:#131109;--bg3:#1a1712;--bg4:#211e18;
+  --sidebar-bg:rgba(16,13,9,0.97);
+  --header-bg:rgba(13,11,9,0.88);
+  --card-bg:rgba(255,255,255,0.022);
+  --card-hover:rgba(255,255,255,0.035);
+  --modal-bg:#15120e;
+  --input-bg:rgba(255,255,255,0.045);
+  --input-bg-sel:#15120e;
+  --border:rgba(200,169,110,0.12);
+  --border2:rgba(255,255,255,0.06);
+  --border3:rgba(255,255,255,0.04);
+  --text:#f0ede8;--text2:rgba(240,237,232,0.55);--text3:rgba(240,237,232,0.3);
+  --text-input:#f0ede8;
+  --shadow:0 4px 24px rgba(0,0,0,0.4);
+  --scrollbar:rgba(200,169,110,0.18);
+  --tag-bg:rgba(255,255,255,0.04);
+  --tag-border:rgba(255,255,255,0.07);
+  --surface-alpha:rgba(255,255,255,0.025);
+  --surface-alpha2:rgba(255,255,255,0.04);
+  --grid-line:rgba(200,169,110,0.022);
+  --banner-bg:linear-gradient(135deg,rgba(200,169,110,0.07),rgba(100,80,160,0.03));
+  --ai-banner:linear-gradient(135deg,rgba(164,130,220,0.08),rgba(100,160,220,0.05));
+  --gold-glow:rgba(200,169,110,0.14);
+}
+
+/* ── LIGHT THEME ── */
+[data-theme="light"]{
+  --bg:#f5f2ed;--bg2:#ede9e2;--bg3:#e4dfd6;--bg4:#d8d2c8;
+  --sidebar-bg:rgba(255,252,248,0.98);
+  --header-bg:rgba(245,242,237,0.92);
+  --card-bg:rgba(255,255,255,0.75);
+  --card-hover:rgba(255,255,255,0.95);
+  --modal-bg:#faf7f2;
+  --input-bg:rgba(0,0,0,0.04);
+  --input-bg-sel:#faf7f2;
+  --border:rgba(200,169,110,0.25);
+  --border2:rgba(0,0,0,0.08);
+  --border3:rgba(0,0,0,0.05);
+  --text:#1a1714;--text2:rgba(26,23,20,0.6);--text3:rgba(26,23,20,0.38);
+  --text-input:#1a1714;
+  --shadow:0 4px 24px rgba(0,0,0,0.08);
+  --scrollbar:rgba(200,169,110,0.35);
+  --tag-bg:rgba(0,0,0,0.04);
+  --tag-border:rgba(0,0,0,0.08);
+  --surface-alpha:rgba(255,255,255,0.6);
+  --surface-alpha2:rgba(255,255,255,0.85);
+  --grid-line:rgba(200,169,110,0.05);
+  --banner-bg:linear-gradient(135deg,rgba(200,169,110,0.1),rgba(164,130,220,0.05));
+  --ai-banner:linear-gradient(135deg,rgba(164,130,220,0.1),rgba(100,160,220,0.06));
+  --gold-glow:rgba(200,169,110,0.2);
+}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body,#root{height:100%}
+body{background:var(--bg);color:var(--text);font-family:var(--fb);-webkit-font-smoothing:antialiased;line-height:1.5;transition:var(--transition-theme)}
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--scrollbar);border-radius:3px}
+input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none}
+input[type=checkbox]{accent-color:var(--gold);width:14px;height:14px;cursor:pointer}
+input[type=range]{accent-color:var(--gold);width:100%}
+button{cursor:pointer}
+
+/* ── THEME TOGGLE SWITCH ── */
+.theme-toggle{position:relative;width:48px;height:26px;flex-shrink:0}
+.theme-toggle input{opacity:0;width:0;height:0;position:absolute}
+.theme-track{position:absolute;inset:0;background:rgba(200,169,110,0.15);border:1px solid rgba(200,169,110,0.3);border-radius:99px;cursor:pointer;transition:background 0.28s,border-color 0.28s}
+.theme-track::after{content:'';position:absolute;top:3px;left:3px;width:18px;height:18px;background:var(--gold);border-radius:50%;transition:transform 0.28s cubic-bezier(0.4,0,0.2,1),background 0.28s;box-shadow:0 1px 4px rgba(0,0,0,0.2)}
+input:checked+.theme-track{background:rgba(200,169,110,0.25);border-color:rgba(200,169,110,0.5)}
+input:checked+.theme-track::after{transform:translateX(22px)}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.5}}
+@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+.fade-up{animation:fadeUp 0.4s cubic-bezier(0.4,0,0.2,1) both}
+.fade-up-1{animation-delay:0.05s}.fade-up-2{animation-delay:0.1s}.fade-up-3{animation-delay:0.15s}.fade-up-4{animation-delay:0.2s}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<script type="text/babel">
+const {useState,useEffect,useRef,useCallback,useMemo}=React;
+
+// ═══════════════════════════════════════════════════════════════════════════
+// DATA
+// ═══════════════════════════════════════════════════════════════════════════
+const SKILLS_DB=[
+  {id:1,name:'Architectural Design',cat:'Design'},{id:2,name:'Interior Design',cat:'Design'},
+  {id:3,name:'Facade Design',cat:'Design'},{id:4,name:'Landscape Architecture',cat:'Design'},
+  {id:5,name:'Urban Planning',cat:'Design'},{id:6,name:'Space Planning',cat:'Design'},
+  {id:7,name:'Sustainable Design',cat:'Design'},{id:8,name:'Heritage Conservation',cat:'Design'},
+  {id:9,name:'Structural Coordination',cat:'Technical'},{id:10,name:'MEP Coordination',cat:'Technical'},
+  {id:11,name:'Construction Documentation',cat:'Technical'},{id:12,name:'Site Supervision',cat:'Technical'},
+  {id:13,name:'Cost Estimation',cat:'Technical'},{id:14,name:'Building Codes',cat:'Technical'},
+  {id:15,name:'AutoCAD',cat:'Software'},{id:16,name:'Revit / BIM',cat:'Software'},
+  {id:17,name:'SketchUp',cat:'Software'},{id:18,name:'Rhino / Grasshopper',cat:'Software'},
+  {id:19,name:'Lumion / Enscape',cat:'Software'},{id:20,name:'Adobe Creative Suite',cat:'Software'},
+  {id:21,name:'3ds Max',cat:'Software'},
+  {id:22,name:'Residential',cat:'Project Type'},{id:23,name:'Commercial',cat:'Project Type'},
+  {id:24,name:'Hospitality',cat:'Project Type'},{id:25,name:'Healthcare',cat:'Project Type'},
+  {id:26,name:'Industrial',cat:'Project Type'},{id:27,name:'Mixed Use',cat:'Project Type'},
+];
+
+const LEVEL_LABELS={1:'Beginner',2:'Basic',3:'Intermediate',4:'Advanced',5:'Expert'};
+
+// ═══════════════════════════════════════════════════════════════════════════
+// REFERENCE DATA — from Creospace_Timesheet_Tracker.xlsx
+// ═══════════════════════════════════════════════════════════════════════════
+
+// PROJECT PHASES (from Reference sheet)
+const PHASES_DB=[
+  {code:'PD',name:'Pre-Design / Programming'},
+  {code:'SD',name:'Schematic Design'},
+  {code:'DD',name:'Design Development'},
+  {code:'CD',name:'Construction Documents'},
+  {code:'BA',name:'Bidding / Tender Assistance'},
+  {code:'CA',name:'Construction Administration'},
+  {code:'SV',name:'Site Visits / Inspections'},
+  {code:'AB',name:'As-Built / Handover Documentation'},
+];
+
+// ACTIVITY CODES (from Reference sheet)
+const ACTIVITY_CODES=[
+  {code:'DRW',name:'Drawing Production (CAD / Revit / AutoCAD)',billable:true},
+  {code:'BIM',name:'BIM Modeling',billable:true},
+  {code:'RND',name:'Rendering & Visualization (3DS Max / Lumion)',billable:true},
+  {code:'DES',name:'Design Ideation / Concept Work',billable:true},
+  {code:'QCK',name:'Design Review / QC Check',billable:true},
+  {code:'CMT',name:'Client Meeting / Presentation',billable:true},
+  {code:'CCO',name:'Consultant Coordination (MEP / Structural)',billable:true},
+  {code:'PRG',name:'Permit / Regulatory Submission',billable:true},
+  {code:'REV',name:'Revision / Rework (Client-requested)',billable:true},
+  {code:'SPC',name:'Specification / BOQ Writing',billable:true},
+  {code:'SUR',name:'Site Measurement / Survey',billable:true},
+  {code:'ADM',name:'Admin / General Office Work',billable:false},
+  {code:'INT',name:'Internal Team Meeting',billable:false},
+  {code:'BDV',name:'Business Development / Proposal Prep',billable:false},
+  {code:'TRN',name:'Training / Learning',billable:false},
+  {code:'MKT',name:'Marketing / Social Media Content',billable:false},
+  {code:'QMS',name:'Quality System / Process Work',billable:false},
+  {code:'LEV',name:'Leave / Holiday',billable:false},
+  {code:'OVH',name:'Overhead / Unallocated',billable:false},
+];
+
+// TEAM MEMBERS — mapped to app users (from Reference sheet)
+const INIT_USERS=[
+  {id:1,name:'Arjun Mehta',role:'admin',email:'arjun@creospace.in',dept:'Architecture',avatar:'AM',salary:85000,seniority:'principal',expYears:14,maxWeeklyHours:40,
+    skills:[{skillId:1,level:5},{skillId:9,level:4},{skillId:11,level:5},{skillId:15,level:4},{skillId:16,level:5},{skillId:22,level:5},{skillId:23,level:5}]},
+  {id:2,name:'Priya Sharma',role:'hod',email:'priya@creospace.in',dept:'Interior Design',avatar:'PS',salary:72000,seniority:'lead',expYears:10,maxWeeklyHours:40,
+    skills:[{skillId:2,level:5},{skillId:6,level:4},{skillId:20,level:4},{skillId:22,level:4},{skillId:24,level:5},{skillId:19,level:3}]},
+  // Maps to "Architect 1" in Excel
+  {id:3,name:'Ravi Kumar',role:'user',email:'ravi@creospace.in',dept:'Architecture',avatar:'RK',salary:55000,seniority:'senior',expYears:7,maxWeeklyHours:40,excelName:'Architect 1',
+    skills:[{skillId:1,level:4},{skillId:9,level:3},{skillId:11,level:4},{skillId:15,level:5},{skillId:16,level:4},{skillId:22,level:4},{skillId:23,level:3},{skillId:7,level:3}]},
+  // Maps to "Architect 2" in Excel
+  {id:4,name:'Sneha Patel',role:'user',email:'sneha@creospace.in',dept:'Architecture',avatar:'SP',salary:48000,seniority:'mid',expYears:4,maxWeeklyHours:40,excelName:'Architect 2',
+    skills:[{skillId:1,level:3},{skillId:3,level:4},{skillId:15,level:4},{skillId:17,level:4},{skillId:19,level:3},{skillId:22,level:3},{skillId:11,level:3}]},
+  // Maps to "Designer 1" in Excel
+  {id:5,name:'Karthik Nair',role:'user',email:'karthik@creospace.in',dept:'Interior Design',avatar:'KN',salary:52000,seniority:'mid',expYears:5,maxWeeklyHours:40,excelName:'Designer 1',
+    skills:[{skillId:2,level:4},{skillId:6,level:3},{skillId:20,level:4},{skillId:19,level:4},{skillId:22,level:3},{skillId:24,level:3},{skillId:17,level:3}]},
+  // Maps to "Designer 2" in Excel
+  {id:6,name:'Divya Rao',role:'user',email:'divya@creospace.in',dept:'Architecture',avatar:'DR',salary:44000,seniority:'junior',expYears:2,maxWeeklyHours:40,excelName:'Designer 2',
+    skills:[{skillId:1,level:2},{skillId:15,level:3},{skillId:17,level:3},{skillId:11,level:2},{skillId:22,level:2}]},
+  // Maps to "Visualizer 1" in Excel
+  {id:7,name:'Arun Pillai',role:'user',email:'arun@creospace.in',dept:'Architecture',avatar:'AP',salary:40000,seniority:'junior',expYears:2,maxWeeklyHours:40,excelName:'Visualizer 1',
+    skills:[{skillId:3,level:4},{skillId:17,level:4},{skillId:19,level:4},{skillId:20,level:3}]},
+  // Maps to "Site Engineer 1" in Excel
+  {id:8,name:'Meena Krishnan',role:'user',email:'meena@creospace.in',dept:'Architecture',avatar:'MK',salary:42000,seniority:'junior',expYears:3,maxWeeklyHours:40,excelName:'Site Engineer 1',
+    skills:[{skillId:9,level:3},{skillId:12,level:4},{skillId:14,level:3},{skillId:13,level:2}]},
+];
+let USERS=INIT_USERS;
+
+// PROJECTS — from Projects sheet (CRS project codes preserved)
+const INIT_PROJECTS=[
+  {id:'CRS-WKP-26-001',name:'Workspace Office Interiors',client:'Client A',type:'Commercial',status:'awarded',phase:'Design Development',completion:65,totalBilling:3200000,profit:960000,startDate:'2026-04-09',deadline:'2026-12-31',estimatedHours:1400,assignedTeam:[3,4,5],costPerEmployee:{3:110000,4:90000,5:80000},targetIncentive:{3:55000,4:42000,5:38000},skillReqs:[{skillId:1,minLevel:3,mandatory:true},{skillId:2,minLevel:2,mandatory:true},{skillId:15,minLevel:3,mandatory:true},{skillId:16,minLevel:2,mandatory:false}]},
+  {id:'CRS-IND-26-002',name:'Industrial Facility',client:'Client B',type:'Industrial',status:'pre-award',phase:'Schematic Design',completion:42,totalBilling:4800000,profit:1440000,startDate:'2026-03-01',deadline:'2027-02-28',estimatedHours:2000,assignedTeam:[3,8],costPerEmployee:{3:130000,8:100000},targetIncentive:{3:65000,8:48000},skillReqs:[{skillId:1,minLevel:4,mandatory:true},{skillId:9,minLevel:3,mandatory:true},{skillId:14,minLevel:2,mandatory:true},{skillId:16,minLevel:2,mandatory:false}]},
+  {id:'CRS-DNB-26-003',name:'Design & Build Villa',client:'Client C',type:'Residential',status:'pre-award',phase:'Schematic Design',completion:50,totalBilling:2200000,profit:660000,startDate:'2026-02-15',deadline:'2026-10-31',estimatedHours:900,assignedTeam:[4,5,7],costPerEmployee:{4:85000,5:75000,7:60000},targetIncentive:{4:40000,5:36000,7:28000},skillReqs:[{skillId:1,minLevel:3,mandatory:true},{skillId:3,minLevel:3,mandatory:true},{skillId:19,minLevel:2,mandatory:true},{skillId:22,minLevel:2,mandatory:false}]},
+  {id:'CRS-INT-26-001',name:'Internal / Non-Billable Work',client:'Internal',type:'Internal',status:'awarded',phase:'',completion:0,totalBilling:0,profit:0,startDate:'2026-04-01',deadline:'2027-03-31',estimatedHours:0,assignedTeam:[3,4,5,6,7,8],costPerEmployee:{},targetIncentive:{},skillReqs:[]},
+];
+
+// TIMESHEET DATA — pre-loaded from Excel Daily Log (April 9 2026 entries for Architect 1)
+const INIT_TS=[
+  // From Excel Daily Log — Architect 1 (Ravi Kumar) on 2026-04-09
+  {id:1,userId:3,projectId:'CRS-WKP-26-001',date:'2026-04-09',phaseCode:'DD',activityCode:'DRW',billingHours:3,nonBillingHours:0,activity:'Drawing Production (CAD / Revit / AutoCAD)',notes:'Ground floor plan – revision 2'},
+  {id:2,userId:3,projectId:'CRS-WKP-26-001',date:'2026-04-09',phaseCode:'DD',activityCode:'QCK',billingHours:1,nonBillingHours:0,activity:'Design Review / QC Check',notes:'Internal QC review of DD set'},
+  {id:3,userId:3,projectId:'CRS-IND-26-002',date:'2026-04-09',phaseCode:'SD',activityCode:'DES',billingHours:2,nonBillingHours:0,activity:'Design Ideation / Concept Work',notes:'Concept massing study'},
+  {id:4,userId:3,projectId:'CRS-INT-26-001',date:'2026-04-09',phaseCode:'',activityCode:'INT',billingHours:0,nonBillingHours:1,activity:'Internal Team Meeting',notes:'Weekly team standup meeting'},
+  {id:5,userId:3,projectId:'CRS-INT-26-001',date:'2026-04-09',phaseCode:'',activityCode:'ADM',billingHours:0,nonBillingHours:1,activity:'Admin / General Office Work',notes:'Timesheet & admin'},
+  // Additional sample entries for other team members
+  {id:6,userId:4,projectId:'CRS-WKP-26-001',date:'2026-04-09',phaseCode:'DD',activityCode:'BIM',billingHours:4,nonBillingHours:0,activity:'BIM Modeling',notes:'Level 2 floor BIM update'},
+  {id:7,userId:4,projectId:'CRS-INT-26-001',date:'2026-04-09',phaseCode:'',activityCode:'INT',billingHours:0,nonBillingHours:1,activity:'Internal Team Meeting',notes:'Weekly standup'},
+  {id:8,userId:5,projectId:'CRS-DNB-26-003',date:'2026-04-09',phaseCode:'SD',activityCode:'RND',billingHours:5,nonBillingHours:0,activity:'Rendering & Visualization',notes:'Exterior render – Villa C front elevation'},
+  {id:9,userId:5,projectId:'CRS-INT-26-001',date:'2026-04-09',phaseCode:'',activityCode:'ADM',billingHours:0,nonBillingHours:1,activity:'Admin / General Office Work',notes:'Project tracker update'},
+  {id:10,userId:6,projectId:'CRS-WKP-26-001',date:'2026-04-08',phaseCode:'DD',activityCode:'DRW',billingHours:5,nonBillingHours:0,activity:'Drawing Production (CAD / Revit / AutoCAD)',notes:'Detail drawings – partition layout'},
+  {id:11,userId:7,projectId:'CRS-DNB-26-003',date:'2026-04-08',phaseCode:'SD',activityCode:'RND',billingHours:6,nonBillingHours:0,activity:'Rendering & Visualization',notes:'3D max – interior mood board'},
+  {id:12,userId:8,projectId:'CRS-IND-26-002',date:'2026-04-08',phaseCode:'SD',activityCode:'SUR',billingHours:5,nonBillingHours:1,activity:'Site Measurement / Survey',notes:'Site dimensions & topography check'},
+  {id:13,userId:3,projectId:'CRS-WKP-26-001',date:'2026-04-08',phaseCode:'DD',activityCode:'CMT',billingHours:2,nonBillingHours:0,activity:'Client Meeting / Presentation',notes:'DD presentation to Client A'},
+  {id:14,userId:3,projectId:'CRS-WKP-26-001',date:'2026-04-08',phaseCode:'DD',activityCode:'DRW',billingHours:5,nonBillingHours:0,activity:'Drawing Production (CAD / Revit / AutoCAD)',notes:'Reflected ceiling plan revision'},
+  {id:15,userId:4,projectId:'CRS-IND-26-002',date:'2026-04-07',phaseCode:'SD',activityCode:'DES',billingHours:4,nonBillingHours:0,activity:'Design Ideation / Concept Work',notes:'Warehouse layout options study'},
+  {id:16,userId:5,projectId:'CRS-WKP-26-001',date:'2026-04-07',phaseCode:'DD',activityCode:'DES',billingHours:3,nonBillingHours:1,activity:'Design Ideation / Concept Work',notes:'Material palette – workspace zones'},
+];
+
+// ═══════════════════════════════════════════════════════════════════════════
+// AUTO-ASSIGNMENT ENGINE
+// ═══════════════════════════════════════════════════════════════════════════
+function calcUtilization(userId,timesheets,projects){
+  const ts=timesheets.filter(t=>t.userId===userId);
+  const assignedProjs=projects.filter(p=>p.assignedTeam?.includes(userId)&&p.status!=='completed');
+  const loggedHrs=ts.reduce((a,t)=>a+(t.billingHours+t.nonBillingHours),0);
+  const projectedHrs=assignedProjs.length*8;
+  const total=Math.min(loggedHrs+projectedHrs,40);
+  return Math.round((total/40)*100);
+}
+
+function scoreEmployee(emp,project,timesheets,allProjects){
+  const util=calcUtilization(emp.id,timesheets,allProjects);
+  // SKILL SCORE (40%)
+  let skillScore=0,mandatoryMet=true,maxSkill=0;
+  for(const req of project.skillReqs){
+    const empSkill=emp.skills.find(s=>s.skillId===req.skillId);
+    const weight=req.mandatory?1.5:0.8;
+    maxSkill+=weight*100;
+    if(!empSkill){if(req.mandatory){mandatoryMet=false;break;}continue;}
+    const ratio=Math.min(empSkill.level/req.minLevel,1.5);
+    skillScore+=ratio*weight*100;
+  }
+  skillScore=mandatoryMet&&maxSkill>0?Math.min((skillScore/maxSkill)*100,100):0;
+
+  // UTILIZATION SCORE (30%)
+  let utilScore=0;
+  if(util<=40)utilScore=100;
+  else if(util<=60)utilScore=80;
+  else if(util<=75)utilScore=55;
+  else if(util<=85)utilScore=25;
+  else utilScore=0;
+
+  // EXPERIENCE SCORE (20%)
+  const senMap={junior:20,mid:50,senior:75,lead:90,principal:100};
+  const expScore=senMap[emp.seniority]||30;
+
+  // DEPT FIT (10%)
+  const deptMap={'Architecture':['Residential','Commercial','Mixed Use','Industrial','Healthcare'],'Interior Design':['Residential','Commercial','Hospitality','Mixed Use']};
+  const fits=(deptMap[emp.dept]||[]).includes(project.type);
+  const deptScore=fits?100:45;
+
+  const total=mandatoryMet?(skillScore*0.4+utilScore*0.3+expScore*0.2+deptScore*0.1):0;
+  return{totalScore:Math.round(total*10)/10,skillScore:Math.round(skillScore),utilScore:Math.round(utilScore),expScore:Math.round(expScore),deptScore:Math.round(deptScore),util,mandatoryMet};
+}
+
+function autoAssign(project,timesheets,allProjects){
+  const candidates=USERS.filter(u=>u.role==='user'||u.role==='hod');
+  const scored=candidates.map(emp=>({emp,score:scoreEmployee(emp,project,timesheets,allProjects)}))
+    .filter(x=>x.score.totalScore>0)
+    .sort((a,b)=>b.score.totalScore-a.score.totalScore);
+
+  // Greedy team selection
+  const team=[];
+  const coveredSkills=new Set();
+  const maxSize=project.totalBilling>=5000000?5:project.totalBilling>=2000000?3:2;
+
+  for(const c of scored){
+    if(team.length>=maxSize)break;
+    const empSkillIds=new Set(c.emp.skills.map(s=>s.skillId));
+    const addsMandatory=project.skillReqs.filter(r=>r.mandatory&&!coveredSkills.has(r.skillId)&&empSkillIds.has(r.skillId)).length>0;
+    const uncovered=project.skillReqs.filter(r=>r.mandatory&&!coveredSkills.has(r.skillId)).length>0;
+    if(team.length===0||uncovered||addsMandatory||(c.score.totalScore>72&&team.length<2)){
+      team.push(c);
+      c.emp.skills.forEach(s=>coveredSkills.add(s.skillId));
+    }
+  }
+
+  // Calculate incentives
+  const pool=project.profit*0.15;
+  const totalScoreSum=team.reduce((a,m)=>a+m.score.totalScore,0);
+  const senMul={junior:0.7,mid:1.0,senior:1.3,lead:1.6,principal:2.0};
+  team.forEach(m=>{
+    const frac=m.score.totalScore/totalScoreSum;
+    const mul=senMul[m.emp.seniority]||1;
+    m.incentive=Math.round(pool*frac*mul);
+    const months=(new Date(project.deadline)-new Date(project.startDate))/(1000*60*60*24*30);
+    m.cost=Math.round((m.emp.salary/22)*months*0.8);
+  });
+
+  // Skill coverage
+  const mandatorySkills=project.skillReqs.filter(r=>r.mandatory);
+  const covered=mandatorySkills.filter(r=>coveredSkills.has(r.skillId)).length;
+  return{team,allScored:scored,coverage:Math.round((covered/mandatorySkills.length)*100)||100};
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// UTILS & PRIMITIVES
+// ═══════════════════════════════════════════════════════════════════════════
+const fmt=n=>new Intl.NumberFormat('en-IN',{style:'currency',currency:'INR',maximumFractionDigits:0}).format(n);
+const today=new Date().toISOString().split('T')[0];
+
+const Icon=({n,s=16})=>{
+  const I={
+    dashboard:<svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>,
+    clock:<svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>,
+    building:<svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>,
+    chart:<svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>,
+    money:<svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>,
+    team:<svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>,
+    logout:<svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>,
+    plus:<svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>,
+    check:<svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="20 6 9 17 4 12"/></svg>,
+    close:<svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>,
+    edit:<svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>,
+    robot:<svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="11" width="18" height="10" rx="2"/><circle cx="12" cy="5" r="2"/><path d="M12 7v4"/><line x1="8" y1="15" x2="8" y2="15.01"/><line x1="16" y1="15" x2="16" y2="15.01"/><path d="M6 11V9a6 6 0 0 1 12 0v2"/></svg>,
+    alert:<svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>,
+    trend:<svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>,
+    skill:<svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>,
+    award:<svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/></svg>,
+    override:<svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>,
+    admin:<svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>,
+    star:<svg width={s} height={s} viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>,
+  };
+  return I[n]||null;
+};
+
+// Score ring
+const ScoreRing=({score,size=52})=>{
+  const r=size/2-4,circ=2*Math.PI*r;
+  const color=score>=80?'#7ec98c':score>=60?'#c8a96e':score>=40?'#e8935a':'#e07a6b';
+  const dash=circ*(score/100);
+  return(
+    <svg width={size} height={size} style={{transform:'rotate(-90deg)'}}>
+      <circle cx={size/2} cy={size/2} r={r} fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="4"/>
+      <circle cx={size/2} cy={size/2} r={r} fill="none" stroke={color} strokeWidth="4"
+        strokeDasharray={`${dash} ${circ}`} strokeLinecap="round"
+        style={{transition:'stroke-dasharray 0.8s cubic-bezier(0.4,0,0.2,1)'}}/>
+      <text x={size/2} y={size/2} textAnchor="middle" dominantBaseline="central"
+        style={{transform:`rotate(90deg) translate(0,0)`,transformOrigin:`${size/2}px ${size/2}px`,fill:color,fontSize:size>48?12:10,fontWeight:700,fontFamily:'var(--fb)'}}>
+        {score}
+      </text>
+    </svg>
+  );
+};
+
+const Bar=({v,max=100,color='var(--gold)',h=6,animate=false})=>(
+  <div style={{background:'var(--tag-bg)',borderRadius:99,height:h,overflow:'hidden',width:'100%'}}>
+    <div style={{width:`${Math.min((v/max)*100,100)}%`,background:color,height:'100%',borderRadius:99,transition:'width 0.7s cubic-bezier(0.4,0,0.2,1)'}}/>
+  </div>
+);
+
+const Badge=({text,type='default'})=>{
+  const C={awarded:{bg:'rgba(126,201,140,0.13)',c:'#7ec98c',b:'rgba(126,201,140,0.28)'},'pre-award':{bg:'rgba(200,169,110,0.13)',c:'#c8a96e',b:'rgba(200,169,110,0.28)'},completed:{bg:'rgba(100,160,220,0.13)',c:'#64a0dc',b:'rgba(100,160,220,0.28)'},admin:{bg:'rgba(200,169,110,0.13)',c:'#c8a96e',b:'rgba(200,169,110,0.28)'},hod:{bg:'rgba(164,130,220,0.13)',c:'#a482dc',b:'rgba(164,130,220,0.28)'},user:{bg:'rgba(100,160,220,0.13)',c:'#64a0dc',b:'rgba(100,160,220,0.28)'},default:{bg:'rgba(255,255,255,0.07)',c:'rgba(255,255,255,0.45)',b:'rgba(255,255,255,0.1)'}};
+  const s=C[type]||C.default;
+  return <span style={{fontSize:10,padding:'2px 9px',borderRadius:99,background:s.bg,color:s.c,border:`1px solid ${s.b}`,textTransform:'uppercase',letterSpacing:'0.09em',fontWeight:600,whiteSpace:'nowrap'}}>{text}</span>;
+};
+
+const Util=({pct})=>{
+  const color=pct<=50?'#7ec98c':pct<=75?'#c8a96e':pct<=90?'#e8935a':'#e07a6b';
+  const label=pct<=50?'Available':pct<=75?'Moderate':pct<=90?'Busy':'Overloaded';
+  return(
+    <div style={{display:'flex',flexDirection:'column',gap:4}}>
+      <div style={{display:'flex',justifyContent:'space-between',fontSize:11}}>
+        <span style={{color:'rgba(255,255,255,0.35)'}}>Utilization</span>
+        <span style={{color,fontWeight:600}}>{pct}% · {label}</span>
+      </div>
+      <Bar v={pct} color={color} h={5}/>
+    </div>
+  );
+};
+
+const Modal=({open,onClose,title,children,width=580})=>{
+  if(!open)return null;
+  return(
+    <div onClick={onClose} style={{position:'fixed',inset:0,background:'rgba(0,0,0,0.78)',zIndex:1000,display:'flex',alignItems:'center',justifyContent:'center',padding:16,backdropFilter:'blur(4px)'}}>
+      <div onClick={e=>e.stopPropagation()} style={{background:'var(--modal-bg)',border:'1px solid var(--border)',borderRadius:20,width:'100%',maxWidth:width,maxHeight:'92vh',overflowY:'auto',padding:'28px 30px',animation:'fadeUp 0.25s ease',boxShadow:'var(--shadow)'}}>
+        <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:24}}>
+          <h3 style={{margin:0,fontSize:19,fontFamily:'var(--fd)',color:'var(--text)',letterSpacing:'-0.01em'}}>{title}</h3>
+          <button onClick={onClose} style={{background:'transparent',border:'none',color:'var(--text3)',padding:4}}><Icon n="close" s={18}/></button>
+        </div>
+        {children}
+      </div>
+    </div>
+  );
+};
+
+const iS={background:'var(--input-bg)',border:'1px solid var(--border2)',borderRadius:10,padding:'10px 13px',color:'var(--text-input)',fontSize:13,fontFamily:'var(--fb)',outline:'none',width:'100%',boxSizing:'border-box',transition:'background 0.28s ease,border-color 0.28s ease,color 0.28s ease'};
+const Inp=p=><input {...p} style={{...iS,...p.style}}/>;
+const Sel=({children,...p})=><select {...p} style={{...iS,background:'var(--input-bg-sel)',...p.style}}>{children}</select>;
+const Txta=p=><textarea {...p} style={{...iS,resize:'vertical',minHeight:70,...p.style}}/>;
+const Fld=({label,children})=><div style={{display:'flex',flexDirection:'column',gap:5}}><label style={{fontSize:10,color:'var(--text3)',textTransform:'uppercase',letterSpacing:'0.09em'}}>{label}</label>{children}</div>;
+
+const Btn=({children,onClick,variant='primary',size='md',disabled,full})=>{
+  const V={primary:{background:'linear-gradient(135deg,#c8a96e,#9a7840)',color:'#12100c',border:'none'},secondary:{background:'rgba(255,255,255,0.05)',color:'var(--text2)',border:'1px solid var(--border2)'},ghost:{background:'transparent',color:'var(--text2)',border:'1px solid var(--border2)'},danger:{background:'rgba(224,122,107,0.13)',color:'#e07a6b',border:'1px solid rgba(224,122,107,0.28)'},ai:{background:'linear-gradient(135deg,rgba(164,130,220,0.2),rgba(100,160,220,0.2))',color:'#b89ce0',border:'1px solid rgba(164,130,220,0.3)'}};
+  const S={sm:{padding:'5px 13px',fontSize:11},md:{padding:'9px 18px',fontSize:13},lg:{padding:'12px 24px',fontSize:14}};
+  return <button onClick={onClick} disabled={disabled} style={{...V[variant],...S[size],borderRadius:10,cursor:disabled?'not-allowed':'pointer',fontFamily:'var(--fb)',fontWeight:600,display:'inline-flex',alignItems:'center',gap:6,opacity:disabled?0.45:1,width:full?'100%':'auto',justifyContent:full?'center':'flex-start'}}>{children}</button>;
+};
+
+const SkillBadge=({skillId,level,minLevel})=>{
+  const skill=SKILLS_DB.find(s=>s.id===skillId);
+  if(!skill)return null;
+  const met=level>=minLevel;
+  return <span style={{fontSize:10,padding:'2px 8px',borderRadius:6,background:met?'rgba(126,201,140,0.1)':'rgba(224,122,107,0.1)',color:met?'#7ec98c':'#e07a6b',border:`1px solid ${met?'rgba(126,201,140,0.25)':'rgba(224,122,107,0.25)'}`,whiteSpace:'nowrap'}}>
+    {met?'✓':'✗'} {skill.name} ({LEVEL_LABELS[level]})
+  </span>;
+};
+
+// ═══════════════════════════════════════════════════════════════════════════
+// MAIN APP
+// ═══════════════════════════════════════════════════════════════════════════
+const App=()=>{
+  const [user,setUser]=useState(null);
+  const [page,setPage]=useState('dashboard');
+  const [projects,setProjects]=useState(INIT_PROJECTS);
+  const [timesheets,setTimesheets]=useState(INIT_TS);
+  const [users,setUsers]=useState(INIT_USERS);
+  const [sideW,setSideW]=useState(true);
+  const [toast,setToast]=useState(null);
+  const [theme,setTheme]=useState(()=>localStorage.getItem('creo-theme')||'dark');
+
+  // Keep global USERS in sync so engine & other components see latest salaries
+  useEffect(()=>{ USERS=users; },[users]);
+
+  useEffect(()=>{
+    document.documentElement.setAttribute('data-theme',theme);
+    localStorage.setItem('creo-theme',theme);
+  },[theme]);
+
+  const toggleTheme=()=>setTheme(t=>t==='dark'?'light':'dark');
+  const isDark=theme==='dark';
+  const toast_=useCallback((msg,type='success')=>{setToast({msg,type});setTimeout(()=>setToast(null),3500);},[]);
+
+  if(!user)return <Login onLogin={u=>{setUser(u);setPage('dashboard');}} isDark={isDark} toggleTheme={toggleTheme}/>;
+
+  const isAdmin=user.role==='admin';
+  const isHod=user.role==='hod'||user.role==='admin';
+
+  // Refresh current user object whenever users state changes (so salary shows updated value)
+  const currentUser=users.find(u=>u.id===user.id)||user;
+
+  const nav=[
+    {id:'dashboard',label:'Dashboard',icon:'dashboard'},
+    {id:'timesheet',label:'Timesheets',icon:'clock'},
+    {id:'projects',label:'Projects',icon:'building'},
+    {id:'kpi',label:'KPI Tracker',icon:'chart'},
+    {id:'salary',label:'Salary & Incentives',icon:'money'},
+    ...(isHod?[{id:'team',label:'Team',icon:'team'}]:[]),
+    ...(isAdmin?[{id:'admin',label:'Admin · Salary Mgmt',icon:'admin'}]:[]),
+  ];
+
+  const uProj=isHod?projects:projects.filter(p=>p.assignedTeam?.includes(currentUser.id));
+  const uTs=isHod?timesheets:timesheets.filter(t=>t.userId===currentUser.id);
+  const base=currentUser.salary;
+
+  // CAPPED incentive: earned = min(actual_earned, cap) per project
+  const inc=uProj.reduce((s,p)=>{
+    const cap=p.targetIncentive?.[currentUser.id]||0;
+    const raw=cap?Math.round(cap*(p.completion/100)):0;
+    return s+Math.min(raw,cap); // never exceed cap
+  },0);
+
+  /* ── THEME TOGGLE SWITCH ─────────────────────────────────────── */
+  const ThemeSwitch=({compact})=>(
+    <div style={{display:'flex',alignItems:'center',gap:compact?6:10,padding:compact?'6px 10px':'8px 10px',borderRadius:10}}>
+      <span style={{fontSize:compact?12:14,flexShrink:0}}>{isDark?'🌙':'☀️'}</span>
+      {!compact&&sideW&&<span style={{fontSize:12,color:'var(--text3)',flex:1,whiteSpace:'nowrap'}}>{isDark?'Dark':'Light'} Mode</span>}
+      <label className="theme-toggle" title="Toggle theme" style={{marginLeft:compact?0:'auto'}}>
+        <input type="checkbox" checked={!isDark} onChange={toggleTheme}/>
+        <span className="theme-track"/>
+      </label>
+    </div>
+  );
+
+  return(
+    <div style={{display:'flex',minHeight:'100vh',background:'var(--bg)',transition:'background 0.28s ease'}}>
+      {/* SIDEBAR */}
+      <aside style={{width:sideW?238:62,background:'var(--sidebar-bg)',borderRight:'1px solid var(--border)',display:'flex',flexDirection:'column',transition:'width 0.28s cubic-bezier(0.4,0,0.2,1)',overflow:'hidden',position:'fixed',top:0,left:0,bottom:0,zIndex:200,flexShrink:0,boxShadow:isDark?'2px 0 20px rgba(0,0,0,0.3)':'2px 0 20px rgba(0,0,0,0.06)'}}>
+
+        {/* Logo */}
+        <div style={{padding:'22px 13px 14px',display:'flex',alignItems:'center',gap:10,borderBottom:'1px solid var(--border3)',minHeight:66}}>
+          <div style={{width:36,height:36,borderRadius:10,background:'linear-gradient(135deg,#c8a96e,#9a7840)',display:'flex',alignItems:'center',justifyContent:'center',fontSize:18,fontWeight:800,color:'#12100c',flexShrink:0,fontFamily:'var(--fd)'}}>C</div>
+          {sideW&&<div style={{overflow:'hidden',whiteSpace:'nowrap'}}>
+            <div style={{fontSize:15,fontWeight:700,color:'var(--gold)',letterSpacing:'0.14em',fontFamily:'var(--fd)'}}>CREOSPACE</div>
+            <div style={{fontSize:9,color:'var(--text3)',letterSpacing:'0.18em',marginTop:1}}>PLATFORM v2</div>
+          </div>}
+        </div>
+
+        {/* User chip */}
+        <div style={{padding:'11px 12px',borderBottom:'1px solid var(--border3)',display:'flex',alignItems:'center',gap:10}}>
+          <div style={{width:34,height:34,borderRadius:'50%',background:'rgba(200,169,110,0.12)',border:'1px solid rgba(200,169,110,0.25)',display:'flex',alignItems:'center',justifyContent:'center',fontSize:11,fontWeight:700,color:'var(--gold)',flexShrink:0}}>{user.avatar}</div>
+          {sideW&&<div><div style={{fontSize:13,fontWeight:600,color:'var(--text)',whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis',maxWidth:150}}>{user.name}</div><Badge text={user.role} type={user.role}/></div>}
+        </div>
+
+        {/* Nav */}
+        <nav style={{flex:1,padding:'10px 8px',display:'flex',flexDirection:'column',gap:2}}>
+          {nav.map(item=>(
+            <button key={item.id} onClick={()=>setPage(item.id)} style={{display:'flex',alignItems:'center',gap:10,padding:'10px 10px',borderRadius:10,border:'none',cursor:'pointer',background:page===item.id?'rgba(200,169,110,0.12)':'transparent',color:page===item.id?'var(--gold)':'var(--text3)',transition:'all 0.18s',textAlign:'left',width:'100%',fontFamily:'var(--fb)',fontSize:13,fontWeight:page===item.id?600:400,whiteSpace:'nowrap'}}>
+              <span style={{flexShrink:0}}><Icon n={item.icon} s={15}/></span>
+              {sideW&&item.label}
+              {item.id==='projects'&&sideW&&<span style={{marginLeft:'auto',background:'rgba(200,169,110,0.12)',color:'var(--gold)',fontSize:10,padding:'1px 6px',borderRadius:99}}>{projects.length}</span>}
+            </button>
+          ))}
+        </nav>
+
+        {/* Bottom controls */}
+        <div style={{padding:'10px 8px',borderTop:'1px solid var(--border3)',display:'flex',flexDirection:'column',gap:2}}>
+          {/* Theme Toggle */}
+          <ThemeSwitch/>
+          <button onClick={()=>setSideW(s=>!s)} style={{display:'flex',alignItems:'center',gap:10,padding:'9px 10px',borderRadius:10,border:'none',cursor:'pointer',background:'transparent',color:'var(--text3)',fontSize:12,fontFamily:'var(--fb)',whiteSpace:'nowrap'}}>
+            <span style={{flexShrink:0,fontSize:10}}>{sideW?'◀':'▶'}</span>{sideW&&'Collapse'}
+          </button>
+          <button onClick={()=>setUser(null)} style={{display:'flex',alignItems:'center',gap:10,padding:'9px 10px',borderRadius:10,border:'none',cursor:'pointer',background:'transparent',color:'rgba(224,122,107,0.55)',fontSize:12,fontFamily:'var(--fb)',whiteSpace:'nowrap'}}>
+            <span style={{flexShrink:0}}><Icon n="logout" s={14}/></span>{sideW&&'Sign Out'}
+          </button>
+        </div>
+      </aside>
+
+      {/* MAIN */}
+      <main style={{flex:1,marginLeft:sideW?238:62,transition:'margin-left 0.28s cubic-bezier(0.4,0,0.2,1)',display:'flex',flexDirection:'column',minHeight:'100vh'}}>
+        {/* Header */}
+        <header style={{padding:'17px 28px',borderBottom:'1px solid var(--border2)',display:'flex',justifyContent:'space-between',alignItems:'center',background:'var(--header-bg)',backdropFilter:'blur(12px)',position:'sticky',top:0,zIndex:100}}>
+          <div>
+            <h1 style={{margin:0,fontSize:20,fontFamily:'var(--fd)',color:'var(--text)',letterSpacing:'-0.01em'}}>{nav.find(n=>n.id===page)?.label||'Dashboard'}</h1>
+            <p style={{margin:0,fontSize:11,color:'var(--text3)',marginTop:1}}>{new Date().toLocaleDateString('en-IN',{weekday:'long',year:'numeric',month:'long',day:'numeric'})}</p>
+          </div>
+          <div style={{display:'flex',alignItems:'center',gap:10}}>
+            {isHod&&<div style={{fontSize:11,color:'var(--text3)',background:'var(--ai-banner)',border:'1px solid rgba(164,130,220,0.2)',borderRadius:8,padding:'4px 10px',display:'flex',alignItems:'center',gap:5}}><Icon n="robot" s={12}/><span style={{color:'#a482dc'}}>AI Engine Active</span></div>}
+            {/* Show compact toggle in header when sidebar is collapsed */}
+            {!sideW&&<ThemeSwitch compact/>}
+            <div style={{display:'flex',alignItems:'center',gap:5}}><div style={{width:6,height:6,borderRadius:'50%',background:'var(--green)',boxShadow:'0 0 6px var(--green)'}}/><span style={{fontSize:11,color:'var(--text3)'}}>Live</span></div>
+          </div>
+        </header>
+
+        <div style={{padding:'22px 28px',flex:1}}>
+          {page==='dashboard'&&<DashPage user={currentUser} projects={uProj} timesheets={uTs} base={base} inc={inc} isHod={isHod} allTs={timesheets} allProj={projects} isDark={isDark}/>}
+          {page==='timesheet'&&<TsPage user={currentUser} timesheets={timesheets} setTimesheets={setTimesheets} projects={uProj} isHod={isHod} toast={toast_}/>}
+          {page==='projects'&&<ProjPage user={currentUser} projects={projects} setProjects={setProjects} isHod={isHod} timesheets={timesheets} toast={toast_} users={users}/>}
+          {page==='kpi'&&<KpiPage user={currentUser} projects={uProj} timesheets={uTs} isHod={isHod}/>}
+          {page==='salary'&&<SalaryPage user={currentUser} projects={uProj} base={base} inc={inc} isHod={isHod} allProj={projects} users={users}/>}
+          {page==='team'&&isHod&&<TeamPage users={users} projects={projects} timesheets={timesheets}/>}
+          {page==='admin'&&isAdmin&&<AdminPage users={users} setUsers={setUsers} projects={projects} setProjects={setProjects} toast={toast_}/>}
+        </div>
+      </main>
+
+      {toast&&<div style={{position:'fixed',bottom:22,right:22,background:toast.type==='success'?'rgba(126,201,140,0.13)':'rgba(224,122,107,0.13)',border:`1px solid ${toast.type==='success'?'rgba(126,201,140,0.4)':'rgba(224,122,107,0.4)'}`,color:toast.type==='success'?'var(--green)':'var(--red)',padding:'11px 18px',borderRadius:12,fontSize:13,zIndex:9999,animation:'fadeUp 0.3s ease',backdropFilter:'blur(8px)',boxShadow:'var(--shadow)'}}>{toast.msg}</div>}
+    </div>
+  );
+};
+
+// ═══════════════════════════════════════════════════════════════════════════
+// LOGIN
+// ═══════════════════════════════════════════════════════════════════════════
+const Login=({onLogin,isDark,toggleTheme})=>{
+  const [email,setEmail]=useState('');const [pass,setPass]=useState('');const [err,setErr]=useState('');
+  const go=()=>{const u=USERS.find(u=>u.email===email);if(u&&pass==='demo123')onLogin(u);else setErr('Use any email below · password: demo123');};
+  return(
+    <div style={{minHeight:'100vh',display:'flex',alignItems:'center',justifyContent:'center',background:'var(--bg)',position:'relative',overflow:'hidden',transition:'background 0.28s ease'}}>
+      <div style={{position:'absolute',inset:0,backgroundImage:'radial-gradient(ellipse 70% 50% at 50% -10%,rgba(200,169,110,0.16) 0%,transparent 65%),radial-gradient(ellipse 40% 55% at 90% 110%,rgba(100,80,160,0.08) 0%,transparent 65%)'}}/>
+      <div style={{position:'absolute',inset:0,backgroundImage:'linear-gradient(var(--grid-line) 1px,transparent 1px),linear-gradient(90deg,var(--grid-line) 1px,transparent 1px)',backgroundSize:'42px 42px'}}/>
+      {/* Theme toggle on login */}
+      <div style={{position:'absolute',top:20,right:24,display:'flex',alignItems:'center',gap:8,zIndex:10}}>
+        <span style={{fontSize:12,color:'var(--text3)'}}>{isDark?'🌙 Dark':'☀️ Light'}</span>
+        <label className="theme-toggle" title="Toggle theme">
+          <input type="checkbox" checked={!isDark} onChange={toggleTheme}/>
+          <span className="theme-track"/>
+        </label>
+      </div>
+      <div style={{position:'relative',zIndex:1,width:'100%',maxWidth:430,padding:'0 18px'}}>
+        <div style={{textAlign:'center',marginBottom:36}}>
+          <div style={{fontSize:42,fontFamily:'var(--fd)',color:'var(--gold)',letterSpacing:'0.18em',fontWeight:700,textTransform:'uppercase',fontStyle:'italic'}}>Creospace</div>
+          <div style={{fontSize:10,color:'var(--text3)',letterSpacing:'0.3em',textTransform:'uppercase',marginTop:5}}>Project Intelligence · v2.0</div>
+        </div>
+        <div style={{background:'var(--surface-alpha)',border:'1px solid var(--border)',borderRadius:22,padding:'34px 30px',backdropFilter:'blur(24px)',boxShadow:'var(--shadow)'}}>
+          <div style={{fontSize:19,fontFamily:'var(--fd)',color:'var(--text)',marginBottom:22}}>Welcome back</div>
+          <div style={{display:'flex',flexDirection:'column',gap:13}}>
+            <Fld label="Email"><Inp type="email" placeholder="you@creospace.in" value={email} onChange={e=>setEmail(e.target.value)}/></Fld>
+            <Fld label="Password"><Inp type="password" placeholder="••••••••" value={pass} onChange={e=>setPass(e.target.value)} onKeyDown={e=>e.key==='Enter'&&go()}/></Fld>
+            {err&&<div style={{fontSize:12,color:'var(--red)',background:'rgba(224,122,107,0.08)',padding:'9px 13px',borderRadius:8,border:'1px solid rgba(224,122,107,0.2)'}}>{err}</div>}
+            <Btn onClick={go} size="lg" full>Sign In →</Btn>
+          </div>
+          <div style={{marginTop:22,padding:'13px',background:'var(--card-bg)',borderRadius:10,border:'1px solid var(--border2)'}}>
+            <div style={{fontSize:10,color:'var(--text3)',marginBottom:9,textTransform:'uppercase',letterSpacing:'0.1em'}}>Demo accounts · password: demo123</div>
+            {USERS.map(u=>(
+              <div key={u.id} onClick={()=>{setEmail(u.email);setPass('demo123');}} style={{fontSize:12,color:'var(--text2)',cursor:'pointer',display:'flex',justifyContent:'space-between',alignItems:'center',padding:'5px 0',borderBottom:'1px solid var(--border3)',transition:'color 0.15s'}}>
+                <span>{u.name} <span style={{color:'var(--text3)'}}>·</span> <span style={{color:'var(--text3)',fontSize:11}}>{u.seniority}</span></span>
+                <Badge text={u.role} type={u.role}/>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// ═══════════════════════════════════════════════════════════════════════════
+// DASHBOARD
+// ═══════════════════════════════════════════════════════════════════════════
+const StatCard=({label,value,sub,icon,accent='var(--gold)',trend})=>(
+  <div className="fade-up" style={{background:'var(--card-bg)',border:'1px solid var(--border2)',borderRadius:15,padding:'18px 20px',display:'flex',flexDirection:'column',gap:10,position:'relative',overflow:'hidden',transition:'background 0.28s ease'}}>
+    <div style={{position:'absolute',top:-18,right:-18,width:72,height:72,borderRadius:'50%',background:accent,opacity:0.08}}/>
+    <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start'}}>
+      <span style={{fontSize:10,color:'var(--text3)',textTransform:'uppercase',letterSpacing:'0.1em'}}>{label}</span>
+      <div style={{color:accent,opacity:0.75}}>{icon}</div>
+    </div>
+    <div style={{fontSize:24,fontWeight:700,color:'var(--text)',fontFamily:'var(--fd)',letterSpacing:'-0.02em'}}>{value}</div>
+    {sub&&<div style={{fontSize:11,color:'var(--text3)'}}>{sub}</div>}
+    {trend!==undefined&&<div style={{fontSize:10,color:trend>=0?'var(--green)':'var(--red)'}}>{trend>=0?'▲':'▼'} {Math.abs(trend)}% vs last month</div>}
+  </div>
+);
+
+const BarChart=({data,color='var(--gold)'})=>{
+  const mx=Math.max(...data.map(d=>d.v),1);
+  return(
+    <div style={{display:'flex',alignItems:'flex-end',gap:5,height:60}}>
+      {data.map((d,i)=>(
+        <div key={i} style={{flex:1,display:'flex',flexDirection:'column',alignItems:'center',gap:3}}>
+          <div style={{width:'100%',background:color,borderRadius:'3px 3px 0 0',height:`${(d.v/mx)*52}px`,opacity:i===data.length-1?1:0.38}}/>
+          <span style={{fontSize:8,color:'var(--text3)'}}>{d.l}</span>
+        </div>
+      ))}
+    </div>
+  );
+};
+
+const DashPage=({user,projects,timesheets,base,inc,isHod,allTs,allProj})=>{
+  const tb=timesheets.reduce((a,t)=>a+t.billingHours,0);
+  const tnb=timesheets.reduce((a,t)=>a+t.nonBillingHours,0);
+  const avg=projects.length?Math.round(projects.reduce((a,p)=>a+p.completion,0)/projects.length):0;
+  const mhrs=[{l:'Oct',v:168},{l:'Nov',v:152},{l:'Dec',v:144},{l:'Jan',v:176},{l:'Feb',v:160},{l:'Mar',v:tb||68}];
+  return(
+    <div style={{display:'flex',flexDirection:'column',gap:20}}>
+      <div className="fade-up" style={{background:'var(--banner-bg)',border:'1px solid var(--border)',borderRadius:18,padding:'22px 26px',display:'flex',justifyContent:'space-between',alignItems:'center',flexWrap:'wrap',gap:14}}>
+        <div>
+          <h2 style={{margin:'0 0 4px',fontSize:20,fontFamily:'var(--fd)',color:'var(--text)'}}>Welcome back, {user.name.split(' ')[0]} 👋</h2>
+          <p style={{margin:0,fontSize:12,color:'var(--text3)'}}>AI-powered project intelligence · {new Date().toLocaleDateString('en-IN',{month:'long',year:'numeric'})}</p>
+        </div>
+        <div style={{textAlign:'right'}}>
+          <div style={{fontSize:11,color:'var(--text3)'}}>Estimated Earnings MTD</div>
+          <div style={{fontSize:30,fontFamily:'var(--fd)',color:'var(--gold)',fontWeight:700}}>{fmt(base+inc)}</div>
+          <div style={{fontSize:10,color:'var(--text3)'}}>Base {fmt(base)} + Incentives {fmt(inc)}</div>
+        </div>
+      </div>
+
+      <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(160px,1fr))',gap:12}}>
+        <StatCard label="Active Projects" value={projects.length} sub={`${projects.filter(p=>p.status==='awarded').length} awarded · ${projects.filter(p=>p.status==='pre-award').length} pre-award`} icon={<Icon n="building" s={16}/>}/>
+        <StatCard label="Billing Hours" value={`${tb}h`} sub={`${tnb}h non-billing`} icon={<Icon n="clock" s={16}/>} trend={8}/>
+        <StatCard label="Avg Completion" value={`${avg}%`} sub="Across all projects" icon={<Icon n="trend" s={16}/>} accent="var(--green)"/>
+        <StatCard label="Incentives Earned" value={fmt(inc)} sub="This quarter" icon={<Icon n="award" s={16}/>} accent="var(--purple)" trend={12}/>
+      </div>
+
+      <div style={{display:'grid',gridTemplateColumns:'1fr 310px',gap:16,flexWrap:'wrap'}}>
+        <div style={{background:'var(--card-bg)',border:'1px solid var(--border2)',borderRadius:15,padding:'18px 20px'}}>
+          <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:14}}>
+            <h3 style={{margin:0,fontSize:14,fontFamily:'var(--fd)',color:'var(--text)'}}>Project Pipeline</h3>
+            <Badge text={`${projects.length} total`}/>
+          </div>
+          <div style={{display:'flex',flexDirection:'column',gap:9}}>
+            {projects.map(p=>(
+              <div key={p.id} style={{padding:'13px 15px',background:'var(--card-bg)',borderRadius:11,border:'1px solid var(--border2)',display:'flex',flexDirection:'column',gap:7}}>
+                <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start',flexWrap:'wrap',gap:6}}>
+                  <div><div style={{fontSize:13,fontWeight:600,color:'var(--text)'}}>{p.name}</div><div style={{fontSize:11,color:'var(--text3)',marginTop:2}}>{p.client} · {p.phase}</div></div>
+                  <div style={{display:'flex',gap:5,alignItems:'center'}}><Badge text={p.status} type={p.status}/><span style={{fontSize:13,color:'var(--gold)',fontWeight:700}}>{p.completion}%</span></div>
+                </div>
+                <Bar v={p.completion} color={p.completion>=50?'var(--green)':'var(--gold)'}/>
+                <div style={{display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+                  <div style={{display:'flex',gap:-4}}>
+                    {USERS.filter(u=>p.assignedTeam?.includes(u.id)).map(u=>(
+                      <div key={u.id} title={u.name} style={{width:22,height:22,borderRadius:'50%',background:'rgba(200,169,110,0.12)',border:'2px solid var(--bg)',display:'flex',alignItems:'center',justifyContent:'center',fontSize:9,color:'var(--gold)',marginLeft:-5,fontWeight:700}}>{u.avatar}</div>
+                    ))}
+                    {isHod&&<div title="AI Assigned" style={{width:22,height:22,borderRadius:'50%',background:'rgba(164,130,220,0.12)',border:'2px solid var(--bg)',display:'flex',alignItems:'center',justifyContent:'center',fontSize:9,color:'#a482dc',marginLeft:-5}}>🤖</div>}
+                  </div>
+                  <span style={{fontSize:10,color:'var(--text3)'}}>Due: {p.deadline}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div style={{display:'flex',flexDirection:'column',gap:14}}>
+          <div style={{background:'var(--card-bg)',border:'1px solid var(--border2)',borderRadius:15,padding:'16px 18px'}}>
+            <h3 style={{margin:'0 0 12px',fontSize:14,fontFamily:'var(--fd)',color:'var(--text)'}}>Monthly Billing Hours</h3>
+            <BarChart data={mhrs}/>
+          </div>
+          {isHod&&(
+            <div style={{background:'var(--card-bg)',border:'1px solid var(--border2)',borderRadius:15,padding:'16px 18px'}}>
+              <h3 style={{margin:'0 0 12px',fontSize:14,fontFamily:'var(--fd)',color:'var(--text)'}}>Team Utilization</h3>
+              {USERS.filter(u=>u.role!=='admin').map(u=>{
+                const ut=calcUtilization(u.id,allTs,allProj);
+                const col=ut<=50?'var(--green)':ut<=75?'var(--gold)':ut<=90?'var(--orange)':'var(--red)';
+                return(
+                  <div key={u.id} style={{marginBottom:10}}>
+                    <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:4}}>
+                      <div style={{display:'flex',gap:7,alignItems:'center'}}>
+                        <div style={{width:24,height:24,borderRadius:'50%',background:'rgba(200,169,110,0.1)',display:'flex',alignItems:'center',justifyContent:'center',fontSize:9,color:'var(--gold)',fontWeight:700}}>{u.avatar}</div>
+                        <span style={{fontSize:12,color:'var(--text2)'}}>{u.name.split(' ')[0]}</span>
+                      </div>
+                      <span style={{fontSize:11,color:col,fontWeight:600}}>{ut}%</span>
+                    </div>
+                    <Bar v={ut} color={col} h={4}/>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// ═══════════════════════════════════════════════════════════════════════════
+// PROJECTS PAGE — with Auto-Assignment Engine
+// ═══════════════════════════════════════════════════════════════════════════
+const PHASES=['Concept Design','Schematic Design','Design Development','Construction Documents','Construction Administration'];
+const PROJ_TYPES=['Residential','Commercial','Hospitality','Healthcare','Industrial','Mixed Use'];
+
+const ProjPage=({user,projects,setProjects,isHod,timesheets,toast})=>{
+  const [showNew,setShowNew]=useState(false);
+  const [showEngine,setShowEngine]=useState(null); // project being assigned
+  const [editP,setEditP]=useState(null);
+  const [showEdit,setShowEdit]=useState(false);
+
+  const handleCreated=(p)=>{
+    setProjects(prev=>[...prev,p]);
+    setShowNew(false);
+    setShowEngine(p);
+    toast('Project created! Running AI assignment engine…','success');
+  };
+  const handleAssigned=(projectId,team)=>{
+    setProjects(prev=>prev.map(p=>{
+      if(p.id!==projectId)return p;
+      const at=team.map(m=>m.emp.id);
+      const cost={},ti={};
+      team.forEach(m=>{cost[m.emp.id]=m.cost;ti[m.emp.id]=m.incentive;});
+      return{...p,assignedTeam:at,costPerEmployee:cost,targetIncentive:ti};
+    }));
+    setShowEngine(null);
+    toast(`Team of ${team.length} assigned automatically!`,'success');
+  };
+
+  return(
+    <div style={{display:'flex',flexDirection:'column',gap:18}}>
+      <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',flexWrap:'wrap',gap:10}}>
+        <div>
+          <p style={{margin:0,fontSize:12,color:'var(--text3)'}}>Full project pipeline — AI auto-assigns optimal team based on skills & utilization</p>
+        </div>
+        {isHod&&<div style={{display:'flex',gap:8}}><Btn onClick={()=>setShowNew(true)} variant="ai"><Icon n="robot" s={13}/> New Project + AI Assign</Btn></div>}
+      </div>
+
+      {/* AI Engine Banner */}
+      {isHod&&(
+        <div style={{background:'var(--ai-banner)',border:'1px solid rgba(164,130,220,0.2)',borderRadius:13,padding:'13px 18px',display:'flex',gap:12,alignItems:'center'}}>
+          <div style={{width:36,height:36,borderRadius:10,background:'rgba(164,130,220,0.15)',display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0}}><Icon n="robot" s={18}/></div>
+          <div style={{flex:1}}>
+            <div style={{fontSize:13,fontWeight:600,color:'#b89ce0',marginBottom:2}}>AI Assignment Engine Active</div>
+            <div style={{fontSize:11,color:'var(--text3)'}}>When you create a project, the engine scores all employees on skill match (40%), utilization (30%), seniority (20%) and department fit (10%) — then selects the optimal team automatically.</div>
+          </div>
+          <div style={{fontSize:11,color:'rgba(164,130,220,0.6)',background:'rgba(164,130,220,0.08)',border:'1px solid rgba(164,130,220,0.18)',borderRadius:8,padding:'4px 10px',whiteSpace:'nowrap'}}>v2.0 Engine</div>
+        </div>
+      )}
+
+      <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(320px,1fr))',gap:14}}>
+        {projects.map(p=>{
+          const team=USERS.filter(u=>p.assignedTeam?.includes(u.id));
+          const unassigned=!p.assignedTeam?.length;
+          return(
+            <div key={p.id} style={{background:'var(--card-bg)',border:`1px solid ${unassigned?'rgba(200,169,110,0.25)':'var(--border2)'}`,borderRadius:15,padding:'18px',display:'flex',flexDirection:'column',gap:11}}>
+              <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start'}}>
+                <div>
+                  <div style={{fontSize:10,color:'var(--text3)',letterSpacing:'0.1em',marginBottom:2}}>{p.id} · {p.type}</div>
+                  <div style={{fontSize:14,fontWeight:700,color:'var(--text)',lineHeight:1.3}}>{p.name}</div>
+                  <div style={{fontSize:11,color:'var(--text3)',marginTop:2}}>{p.client}</div>
+                </div>
+                <div style={{display:'flex',flexDirection:'column',gap:4,alignItems:'flex-end'}}>
+                  <Badge text={p.status} type={p.status}/>
+                  {isHod&&<button onClick={()=>{setEditP(p);setShowEdit(true);}} style={{background:'transparent',border:'none',color:'var(--text3)',padding:3}}><Icon n="edit" s={13}/></button>}
+                </div>
+              </div>
+              <div>
+                <div style={{display:'flex',justifyContent:'space-between',fontSize:11,color:'var(--text3)',marginBottom:4}}>
+                  <span>{p.phase}</span><span style={{color:'var(--gold)',fontWeight:600}}>{p.completion}%</span>
+                </div>
+                <Bar v={p.completion} color={p.completion>=50?'var(--green)':'var(--gold)'} h={7}/>
+                {p.completion<50&&p.status==='pre-award'&&<div style={{fontSize:10,color:'var(--gold)',marginTop:3,display:'flex',gap:3,alignItems:'center'}}><Icon n="alert" s={10}/> {50-p.completion}% more to qualify for award</div>}
+              </div>
+              <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:7}}>
+                <div style={{background:'var(--surface-alpha2)',borderRadius:8,padding:'7px 10px'}}><div style={{fontSize:9,color:'var(--text3)',textTransform:'uppercase'}}>Total Billing</div><div style={{fontSize:12,fontWeight:700,color:'var(--green)'}}>{fmt(p.totalBilling)}</div></div>
+                <div style={{background:'var(--surface-alpha2)',borderRadius:8,padding:'7px 10px'}}><div style={{fontSize:9,color:'var(--text3)',textTransform:'uppercase'}}>Profit</div><div style={{fontSize:12,fontWeight:700,color:'var(--purple)'}}>{fmt(p.profit)}</div></div>
+              </div>
+              {/* Team */}
+              {unassigned?(
+                <div style={{border:'1px dashed rgba(200,169,110,0.25)',borderRadius:9,padding:'10px 13px',display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+                  <span style={{fontSize:11,color:'var(--gold)'}}>⚡ No team assigned yet</span>
+                  {isHod&&<Btn size="sm" variant="ai" onClick={()=>setShowEngine(p)}><Icon n="robot" s={11}/> AI Assign</Btn>}
+                </div>
+              ):(
+                <div style={{display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+                  <div style={{display:'flex',alignItems:'center',gap:5}}>
+                    <div style={{display:'flex'}}>
+                      {team.map(u=><div key={u.id} title={u.name} style={{width:24,height:24,borderRadius:'50%',background:'rgba(200,169,110,0.1)',border:'2px solid var(--bg)',display:'flex',alignItems:'center',justifyContent:'center',fontSize:9,color:'var(--gold)',marginLeft:-6,fontWeight:700}}>{u.avatar}</div>)}
+                    </div>
+                    <span style={{fontSize:10,color:'var(--text3)',marginLeft:4}}>{team.length} member{team.length!==1?'s':''}</span>
+                    <span style={{fontSize:9,color:'rgba(164,130,220,0.6)',background:'rgba(164,130,220,0.08)',border:'1px solid rgba(164,130,220,0.15)',borderRadius:99,padding:'1px 6px'}}>🤖 AI</span>
+                  </div>
+                  {isHod&&<button onClick={()=>setShowEngine(p)} style={{background:'transparent',border:'1px solid var(--border2)',borderRadius:7,padding:'3px 9px',color:'var(--text3)',fontSize:10,fontFamily:'var(--fb)',cursor:'pointer'}}>Reassign</button>}
+                </div>
+              )}
+              {/* Skill chips */}
+              <div style={{display:'flex',flexWrap:'wrap',gap:4}}>
+                {p.skillReqs?.slice(0,3).map(r=>{
+                  const sk=SKILLS_DB.find(s=>s.id===r.skillId);
+                  return sk?<span key={r.skillId} style={{fontSize:9,padding:'2px 7px',borderRadius:5,background:'rgba(200,169,110,0.07)',color:'var(--text3)',border:'1px solid rgba(200,169,110,0.12)'}}>{sk.name}</span>:null;
+                })}
+                {p.skillReqs?.length>3&&<span style={{fontSize:9,padding:'2px 7px',borderRadius:5,background:'var(--surface-alpha2)',color:'var(--text3)'}}>+{p.skillReqs.length-3} more</span>}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* New Project Modal */}
+      <NewProjectModal open={showNew} onClose={()=>setShowNew(false)} onCreated={handleCreated} existingCount={projects.length}/>
+
+      {/* AI Engine Modal */}
+      {showEngine&&<AIEngineModal project={showEngine} timesheets={timesheets} allProjects={projects} onClose={()=>setShowEngine(null)} onAssign={handleAssigned}/>}
+
+      {/* Edit Project Modal */}
+      {showEdit&&editP&&<EditProjectModal project={editP} open={showEdit} onClose={()=>{setShowEdit(false);setEditP(null);}} onSave={(updated)=>{setProjects(prev=>prev.map(p=>p.id===updated.id?updated:p));setShowEdit(false);toast('Project updated!');}}/>}
+    </div>
+  );
+};
+
+// ─── NEW PROJECT MODAL ───────────────────────────────────────────────────────
+const NewProjectModal=({open,onClose,onCreated,existingCount})=>{
+  const [step,setStep]=useState(1);
+  const [form,setForm]=useState({name:'',client:'',type:'Residential',status:'pre-award',phase:'Concept Design',completion:0,totalBilling:'',profit:'',startDate:today,deadline:'',estimatedHours:'',skillReqs:[]});
+  const [selSkillId,setSelSkillId]=useState('');const [selMinLvl,setSelMinLvl]=useState(3);const [selMandatory,setSelMandatory]=useState(true);
+
+  const addSkill=()=>{
+    if(!selSkillId)return;
+    const id=Number(selSkillId);
+    if(form.skillReqs.find(r=>r.skillId===id))return;
+    setForm(f=>({...f,skillReqs:[...f.skillReqs,{skillId:id,minLevel:selMinLvl,mandatory:selMandatory}]}));
+    setSelSkillId('');
+  };
+  const removeSkill=id=>setForm(f=>({...f,skillReqs:f.skillReqs.filter(r=>r.skillId!==id)}));
+
+  const submit=()=>{
+    const p={...form,id:`P${String(existingCount+1).padStart(3,'0')}`,totalBilling:Number(form.totalBilling),profit:Number(form.profit),completion:Number(form.completion),estimatedHours:Number(form.estimatedHours),assignedTeam:[],costPerEmployee:{},targetIncentive:{}};
+    onCreated(p);
+    setStep(1);setForm({name:'',client:'',type:'Residential',status:'pre-award',phase:'Concept Design',completion:0,totalBilling:'',profit:'',startDate:today,deadline:'',estimatedHours:'',skillReqs:[]});
+  };
+
+  const bycat=SKILLS_DB.reduce((acc,s)=>{if(!acc[s.cat])acc[s.cat]=[];acc[s.cat].push(s);return acc;},{});
+
+  if(!open)return null;
+  return(
+    <Modal open={open} onClose={onClose} title="Create New Project" width={640}>
+      {/* Step tabs */}
+      <div style={{display:'flex',gap:0,marginBottom:22,background:'var(--surface-alpha2)',borderRadius:10,padding:4}}>
+        {[{n:1,l:'Project Details'},{n:2,l:'Skill Requirements'}].map(s=>(
+          <button key={s.n} onClick={()=>setStep(s.n)} style={{flex:1,padding:'8px',borderRadius:7,border:'none',background:step===s.n?'rgba(200,169,110,0.15)':'transparent',color:step===s.n?'var(--gold)':'var(--text3)',fontSize:12,fontFamily:'var(--fb)',fontWeight:step===s.n?600:400,cursor:'pointer',transition:'all 0.18s',display:'flex',alignItems:'center',justifyContent:'center',gap:5}}>
+            <span style={{width:18,height:18,borderRadius:'50%',background:step===s.n?'var(--gold)':'rgba(255,255,255,0.08)',color:step===s.n?'#12100c':'var(--text3)',fontSize:10,display:'inline-flex',alignItems:'center',justifyContent:'center',fontWeight:700}}>{s.n}</span>
+            {s.l}
+          </button>
+        ))}
+      </div>
+
+      {step===1&&(
+        <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:13}}>
+          <Fld label="Project Name"><Inp value={form.name} onChange={e=>setForm(f=>({...f,name:e.target.value}))} placeholder="Skyline Residences…" style={{gridColumn:'span 2'}}/></Fld>
+          <Fld label="Client"><Inp value={form.client} onChange={e=>setForm(f=>({...f,client:e.target.value}))} placeholder="Client company…"/></Fld>
+          <Fld label="Project Type"><Sel value={form.type} onChange={e=>setForm(f=>({...f,type:e.target.value}))}>{PROJ_TYPES.map(t=><option key={t}>{t}</option>)}</Sel></Fld>
+          <Fld label="Status"><Sel value={form.status} onChange={e=>setForm(f=>({...f,status:e.target.value}))}><option value="pre-award">Pre-Award</option><option value="awarded">Awarded</option></Sel></Fld>
+          <Fld label="Phase"><Sel value={form.phase} onChange={e=>setForm(f=>({...f,phase:e.target.value}))}>{PHASES.map(ph=><option key={ph}>{ph}</option>)}</Sel></Fld>
+          <Fld label="Total Billing (₹)"><Inp type="number" value={form.totalBilling} onChange={e=>setForm(f=>({...f,totalBilling:e.target.value}))} placeholder="2800000"/></Fld>
+          <Fld label="Profit (₹)"><Inp type="number" value={form.profit} onChange={e=>setForm(f=>({...f,profit:e.target.value}))} placeholder="840000"/></Fld>
+          <Fld label="Start Date"><Inp type="date" value={form.startDate} onChange={e=>setForm(f=>({...f,startDate:e.target.value}))}/></Fld>
+          <Fld label="Deadline"><Inp type="date" value={form.deadline} onChange={e=>setForm(f=>({...f,deadline:e.target.value}))}/></Fld>
+          <Fld label="Estimated Hours"><Inp type="number" value={form.estimatedHours} onChange={e=>setForm(f=>({...f,estimatedHours:e.target.value}))} placeholder="1200"/></Fld>
+          <Fld label="Initial Completion %"><Inp type="number" min="0" max="100" value={form.completion} onChange={e=>setForm(f=>({...f,completion:e.target.value}))}/></Fld>
+          <div style={{gridColumn:'span 2',display:'flex',justifyContent:'flex-end',marginTop:4}}>
+            <Btn onClick={()=>setStep(2)} disabled={!form.name||!form.client}>Next: Skill Requirements →</Btn>
+          </div>
+        </div>
+      )}
+
+      {step===2&&(
+        <div style={{display:'flex',flexDirection:'column',gap:14}}>
+          <div style={{background:'rgba(164,130,220,0.08)',border:'1px solid rgba(164,130,220,0.18)',borderRadius:10,padding:'12px 15px',fontSize:12,color:'rgba(164,130,220,0.8)',display:'flex',gap:8,alignItems:'flex-start'}}>
+            <Icon n="robot" s={14}/><span>Define what skills this project needs. The AI engine will score and match the best team from your roster automatically.</span>
+          </div>
+          {/* Add skill */}
+          <div style={{background:'var(--surface-alpha2)',borderRadius:11,border:'1px solid var(--border2)',padding:'14px'}}>
+            <div style={{fontSize:11,color:'var(--text3)',marginBottom:10,textTransform:'uppercase',letterSpacing:'0.08em'}}>Add Skill Requirement</div>
+            <div style={{display:'grid',gridTemplateColumns:'2fr 1fr 1fr auto',gap:8,alignItems:'flex-end'}}>
+              <Fld label="Skill">
+                <Sel value={selSkillId} onChange={e=>setSelSkillId(e.target.value)}>
+                  <option value="">Select skill…</option>
+                  {Object.entries(bycat).map(([cat,skills])=>(
+                    <optgroup key={cat} label={cat}>
+                      {skills.filter(s=>!form.skillReqs.find(r=>r.skillId===s.id)).map(s=><option key={s.id} value={s.id}>{s.name}</option>)}
+                    </optgroup>
+                  ))}
+                </Sel>
+              </Fld>
+              <Fld label="Min Level">
+                <Sel value={selMinLvl} onChange={e=>setSelMinLvl(Number(e.target.value))}>
+                  {[1,2,3,4,5].map(l=><option key={l} value={l}>{LEVEL_LABELS[l]}</option>)}
+                </Sel>
+              </Fld>
+              <Fld label="Type">
+                <Sel value={selMandatory?'mandatory':'optional'} onChange={e=>setSelMandatory(e.target.value==='mandatory')}>
+                  <option value="mandatory">Mandatory</option>
+                  <option value="optional">Optional</option>
+                </Sel>
+              </Fld>
+              <Btn onClick={addSkill} disabled={!selSkillId} style={{marginBottom:0,alignSelf:'flex-end'}}><Icon n="plus" s={13}/> Add</Btn>
+            </div>
+          </div>
+          {/* Skill list */}
+          {form.skillReqs.length>0?(
+            <div style={{display:'flex',flexDirection:'column',gap:6}}>
+              {form.skillReqs.map(r=>{
+                const sk=SKILLS_DB.find(s=>s.id===r.skillId);
+                return(
+                  <div key={r.skillId} style={{display:'flex',justifyContent:'space-between',alignItems:'center',padding:'10px 14px',background:'var(--surface-alpha2)',borderRadius:9,border:`1px solid ${r.mandatory?'rgba(200,169,110,0.15)':'rgba(255,255,255,0.07)'}`}}>
+                    <div style={{display:'flex',gap:10,alignItems:'center'}}>
+                      <div style={{width:6,height:6,borderRadius:'50%',background:r.mandatory?'var(--gold)':'var(--text3)',flexShrink:0}}/>
+                      <span style={{fontSize:13,color:'var(--text)'}}>{sk?.name}</span>
+                      <span style={{fontSize:10,color:'var(--text3)',background:'rgba(255,255,255,0.05)',borderRadius:5,padding:'1px 7px'}}>{sk?.cat}</span>
+                    </div>
+                    <div style={{display:'flex',gap:8,alignItems:'center'}}>
+                      <span style={{fontSize:11,color:'var(--gold)'}}>{LEVEL_LABELS[r.minLevel]}+</span>
+                      <Badge text={r.mandatory?'Mandatory':'Optional'} type={r.mandatory?'awarded':'default'}/>
+                      <button onClick={()=>removeSkill(r.skillId)} style={{background:'transparent',border:'none',color:'var(--red)',padding:2,cursor:'pointer'}}><Icon n="close" s={13}/></button>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          ):(
+            <div style={{textAlign:'center',padding:'20px',color:'var(--text3)',fontSize:13,border:'1px dashed rgba(255,255,255,0.08)',borderRadius:10}}>No skill requirements added yet.<br/><span style={{fontSize:11,opacity:0.6}}>Add at least one mandatory skill for better AI matching.</span></div>
+          )}
+          <div style={{display:'flex',justifyContent:'space-between',marginTop:4}}>
+            <Btn variant="secondary" onClick={()=>setStep(1)}>← Back</Btn>
+            <Btn onClick={submit} disabled={!form.name||!form.client}><Icon n="robot" s={13}/> Create & Run AI Assignment</Btn>
+          </div>
+        </div>
+      )}
+    </Modal>
+  );
+};
+
+// ─── AI ENGINE MODAL ─────────────────────────────────────────────────────────
+const AIEngineModal=({project,timesheets,allProjects,onClose,onAssign})=>{
+  const [phase,setPhase]=useState('running'); // running | results | override
+  const [result,setResult]=useState(null);
+  const [overrideTeam,setOverrideTeam]=useState([]);
+  const [confirmed,setConfirmed]=useState(false);
+
+  useEffect(()=>{
+    setPhase('running');
+    const t=setTimeout(()=>{
+      const r=autoAssign(project,timesheets,allProjects);
+      setResult(r);
+      setOverrideTeam(r.team.map(m=>m.emp.id));
+      setPhase('results');
+    },2200);
+    return ()=>clearTimeout(t);
+  },[project.id]);
+
+  const confirm=()=>{
+    if(phase==='override'){
+      const sel=result.allScored.filter(s=>overrideTeam.includes(s.emp.id));
+      const pool=project.profit*0.15;
+      const total=sel.reduce((a,s)=>a+s.score.totalScore,0);
+      const senM={junior:0.7,mid:1.0,senior:1.3,lead:1.6,principal:2.0};
+      sel.forEach(s=>{const f=s.score.totalScore/total;const m=senM[s.emp.seniority]||1;s.incentive=Math.round(pool*f*m);s.cost=Math.round((s.emp.salary/22)*3*0.8);});
+      onAssign(project.id,sel);
+    }else{
+      onAssign(project.id,result.team);
+    }
+    setConfirmed(true);
+  };
+
+  return(
+    <Modal open={true} onClose={onClose} title="" width={680}>
+      {/* Header */}
+      <div style={{display:'flex',alignItems:'center',gap:12,marginBottom:20,paddingBottom:16,borderBottom:'1px solid var(--border2)'}}>
+        <div style={{width:40,height:40,borderRadius:12,background:'linear-gradient(135deg,rgba(164,130,220,0.2),rgba(100,160,220,0.15))',display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0}}><Icon n="robot" s={20}/></div>
+        <div>
+          <div style={{fontSize:17,fontFamily:'var(--fd)',color:'var(--text)',fontWeight:600}}>AI Assignment Engine</div>
+          <div style={{fontSize:11,color:'var(--text3)',marginTop:2}}>{project.name}</div>
+        </div>
+        <button onClick={onClose} style={{marginLeft:'auto',background:'transparent',border:'none',color:'var(--text3)',padding:4}}><Icon n="close" s={16}/></button>
+      </div>
+
+      {phase==='running'&&(
+        <div style={{padding:'40px 20px',display:'flex',flexDirection:'column',alignItems:'center',gap:16}}>
+          <div style={{width:56,height:56,borderRadius:'50%',border:'3px solid rgba(164,130,220,0.3)',borderTopColor:'#a482dc',animation:'spin 0.8s linear infinite'}}/>
+          <div style={{textAlign:'center'}}>
+            <div style={{fontSize:15,fontWeight:600,color:'var(--text)',marginBottom:6}}>Analysing your roster…</div>
+            <div style={{fontSize:12,color:'var(--text3)'}}>Scoring all employees on skill match, utilization,<br/>seniority, and department fit</div>
+          </div>
+          <div style={{display:'flex',flexDirection:'column',gap:6,width:'100%',maxWidth:320}}>
+            {['Scanning employee skill profiles…','Calculating current utilization…','Matching against project requirements…','Selecting optimal team…'].map((s,i)=>(
+              <div key={i} style={{display:'flex',gap:8,alignItems:'center',fontSize:12,color:'var(--text3)',animation:`fadeIn 0.4s ${i*0.4}s both`}}>
+                <div style={{width:6,height:6,borderRadius:'50%',background:'#a482dc',animation:'pulse 1s infinite',animationDelay:`${i*0.2}s`,flexShrink:0}}/>
+                {s}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {phase==='results'&&result&&!confirmed&&(
+        <div style={{display:'flex',flexDirection:'column',gap:16}}>
+          {/* Summary bar */}
+          <div style={{display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:10}}>
+            {[
+              {l:'Skill Coverage',v:`${result.coverage}%`,c:'var(--green)'},
+              {l:'Team Size',v:`${result.team.length} members`,c:'var(--gold)'},
+              {l:'Incentive Pool',v:fmt(project.profit*0.15),c:'var(--purple)'},
+            ].map(s=>(
+              <div key={s.l} style={{background:'var(--surface-alpha2)',borderRadius:10,padding:'10px 14px',textAlign:'center'}}>
+                <div style={{fontSize:16,fontWeight:700,color:s.c,fontFamily:'var(--fd)'}}>{s.v}</div>
+                <div style={{fontSize:10,color:'var(--text3)',marginTop:3}}>{s.l}</div>
+              </div>
+            ))}
+          </div>
+
+          {/* Recommended team */}
+          <div>
+            <div style={{fontSize:11,color:'var(--text3)',textTransform:'uppercase',letterSpacing:'0.09em',marginBottom:10,display:'flex',gap:6,alignItems:'center'}}><Icon n="star" s={10}/> Recommended Team</div>
+            <div style={{display:'flex',flexDirection:'column',gap:8}}>
+              {result.team.map((m,i)=>(
+                <div key={m.emp.id} className={`fade-up fade-up-${i+1}`} style={{background:'var(--surface-alpha2)',border:'1px solid rgba(200,169,110,0.15)',borderRadius:12,padding:'14px 16px',display:'flex',gap:14,alignItems:'flex-start'}}>
+                  <div style={{position:'relative',flexShrink:0}}>
+                    <div style={{width:40,height:40,borderRadius:11,background:'rgba(200,169,110,0.1)',border:'1px solid rgba(200,169,110,0.2)',display:'flex',alignItems:'center',justifyContent:'center',fontSize:13,fontWeight:700,color:'var(--gold)'}}>{m.emp.avatar}</div>
+                    <div style={{position:'absolute',top:-4,right:-4,width:16,height:16,borderRadius:'50%',background:'var(--green)',display:'flex',alignItems:'center',justifyContent:'center',fontSize:9,color:'#12100c',fontWeight:700}}>#{i+1}</div>
+                  </div>
+                  <div style={{flex:1,minWidth:0}}>
+                    <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start',flexWrap:'wrap',gap:6}}>
+                      <div>
+                        <div style={{fontSize:14,fontWeight:600,color:'var(--text)'}}>{m.emp.name}</div>
+                        <div style={{fontSize:11,color:'var(--text3)',marginTop:1}}>{m.emp.dept} · {m.emp.seniority}</div>
+                      </div>
+                      <div style={{display:'flex',gap:8,alignItems:'center'}}>
+                        <ScoreRing score={Math.round(m.score.totalScore)} size={46}/>
+                        <div style={{textAlign:'right'}}>
+                          <div style={{fontSize:11,color:'var(--gold)',fontWeight:600}}>{fmt(m.incentive)}</div>
+                          <div style={{fontSize:9,color:'var(--text3)'}}>incentive</div>
+                        </div>
+                      </div>
+                    </div>
+                    {/* Score breakdown */}
+                    <div style={{display:'grid',gridTemplateColumns:'repeat(4,1fr)',gap:6,marginTop:10}}>
+                      {[
+                        {l:'Skill',v:m.score.skillScore,c:'var(--gold)'},
+                        {l:'Utilization',v:m.score.utilScore,c:'var(--green)'},
+                        {l:'Experience',v:m.score.expScore,c:'var(--blue)'},
+                        {l:'Dept Fit',v:m.score.deptScore,c:'var(--purple)'},
+                      ].map(s=>(
+                        <div key={s.l}>
+                          <div style={{display:'flex',justifyContent:'space-between',fontSize:9,color:'var(--text3)',marginBottom:3}}><span>{s.l}</span><span style={{color:s.c}}>{s.v}</span></div>
+                          <Bar v={s.v} color={s.c} h={3}/>
+                        </div>
+                      ))}
+                    </div>
+                    {/* Util bar */}
+                    <div style={{marginTop:8}}><Util pct={m.score.util}/></div>
+                    {/* Matched skills */}
+                    <div style={{display:'flex',flexWrap:'wrap',gap:4,marginTop:8}}>
+                      {project.skillReqs?.slice(0,4).map(r=>{
+                        const empSkill=m.emp.skills.find(s=>s.skillId===r.skillId);
+                        return empSkill?<SkillBadge key={r.skillId} skillId={r.skillId} level={empSkill.level} minLevel={r.minLevel}/>:null;
+                      })}
+                    </div>
+                    <div style={{marginTop:8,fontSize:11,color:'var(--text3)'}}>Cost allocated: <span style={{color:'var(--blue)',fontWeight:600}}>{fmt(m.cost)}</span></div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* All scores (collapsed) */}
+          {result.allScored.length>result.team.length&&(
+            <details style={{background:'var(--card-bg)',borderRadius:10,padding:'10px 14px',border:'1px solid var(--border2)'}}>
+              <summary style={{fontSize:12,color:'var(--text3)',cursor:'pointer',display:'flex',gap:6,alignItems:'center'}}><Icon n="chevron" s={12}/> All candidate scores ({result.allScored.length} evaluated)</summary>
+              <div style={{marginTop:10,display:'flex',flexDirection:'column',gap:6}}>
+                {result.allScored.map(c=>{
+                  const inTeam=result.team.find(m=>m.emp.id===c.emp.id);
+                  return(
+                    <div key={c.emp.id} style={{display:'flex',justifyContent:'space-between',alignItems:'center',padding:'6px 8px',borderRadius:7,background:inTeam?'rgba(126,201,140,0.06)':'transparent'}}>
+                      <div style={{display:'flex',gap:8,alignItems:'center'}}>
+                        <div style={{width:24,height:24,borderRadius:'50%',background:'rgba(200,169,110,0.08)',display:'flex',alignItems:'center',justifyContent:'center',fontSize:9,color:'var(--gold)',fontWeight:700}}>{c.emp.avatar}</div>
+                        <div>
+                          <span style={{fontSize:12,color:'var(--text)'}}>{c.emp.name}</span>
+                          <span style={{fontSize:10,color:'var(--text3)',marginLeft:6}}>{c.emp.seniority} · {c.score.util}% util</span>
+                        </div>
+                        {inTeam&&<span style={{fontSize:9,color:'var(--green)',background:'rgba(126,201,140,0.1)',borderRadius:99,padding:'1px 6px'}}>✓ Selected</span>}
+                        {!c.score.mandatoryMet&&<span style={{fontSize:9,color:'var(--red)',background:'rgba(224,122,107,0.08)',borderRadius:99,padding:'1px 6px'}}>Missing mandatory skills</span>}
+                      </div>
+                      <div style={{display:'flex',gap:8,alignItems:'center'}}>
+                        <div style={{width:80}}><Bar v={c.score.totalScore} color={c.score.totalScore>=70?'var(--green)':c.score.totalScore>=50?'var(--gold)':'var(--red)'} h={4}/></div>
+                        <span style={{fontSize:12,fontWeight:700,color:c.score.totalScore>=70?'var(--green)':c.score.totalScore>=50?'var(--gold)':'var(--red)',minWidth:30,textAlign:'right'}}>{c.score.totalScore}</span>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </details>
+          )}
+
+          {/* Why this team */}
+          <div style={{background:'rgba(200,169,110,0.05)',border:'1px solid rgba(200,169,110,0.15)',borderRadius:10,padding:'12px 15px'}}>
+            <div style={{fontSize:11,fontWeight:600,color:'var(--gold)',marginBottom:7,textTransform:'uppercase',letterSpacing:'0.07em'}}>Why this team?</div>
+            <div style={{display:'flex',flexDirection:'column',gap:5}}>
+              {[
+                `Covers ${result.coverage}% of mandatory skills between them`,
+                `Avg utilization ${Math.round(result.team.reduce((a,m)=>a+m.score.util,0)/result.team.length)}% — comfortable bandwidth for this project`,
+                `Team seniority mix: ${result.team.map(m=>m.emp.seniority).join(', ')}`,
+                `Incentive pool of ${fmt(project.profit*0.15)} distributed by score & seniority`,
+              ].map((r,i)=><div key={i} style={{fontSize:12,color:'var(--text2)',display:'flex',gap:6}}><span style={{color:'var(--gold)',flexShrink:0}}>→</span>{r}</div>)}
+            </div>
+          </div>
+
+          <div style={{display:'flex',gap:8,justifyContent:'space-between'}}>
+            <Btn variant="ghost" onClick={()=>setPhase('override')}><Icon n="override" s={13}/> Override Manually</Btn>
+            <div style={{display:'flex',gap:8}}>
+              <Btn variant="secondary" onClick={onClose}>Cancel</Btn>
+              <Btn onClick={confirm}><Icon n="check" s={13}/> Confirm & Assign Team</Btn>
+            </div>
+          </div>
+          <div style={{fontSize:10,color:'var(--text3)',background:'rgba(224,122,107,0.05)',border:'1px solid rgba(224,122,107,0.12)',borderRadius:8,padding:'8px 12px',display:'flex',gap:6,alignItems:'flex-start'}}>
+            <Icon n="alert" s={11}/> Incentive amounts are AI suggestions. After assigning, go to <strong style={{color:'var(--text2)'}}>Admin › Salary Mgmt › Incentive Caps</strong> to set or adjust hard caps per employee.
+          </div>
+        </div>
+      )}
+
+      {phase==='override'&&result&&(
+        <div style={{display:'flex',flexDirection:'column',gap:14}}>
+          <div style={{background:'rgba(232,147,90,0.07)',border:'1px solid rgba(232,147,90,0.2)',borderRadius:10,padding:'11px 14px',fontSize:12,color:'rgba(232,147,90,0.9)',display:'flex',gap:7,alignItems:'center'}}>
+            <Icon n="override" s={13}/> Manual override mode — the AI recommendation is shown for reference. Select your team below.
+          </div>
+          <div style={{display:'flex',flexDirection:'column',gap:7}}>
+            {result.allScored.map(c=>{
+              const sel=overrideTeam.includes(c.emp.id);
+              return(
+                <div key={c.emp.id} onClick={()=>setOverrideTeam(prev=>sel?prev.filter(id=>id!==c.emp.id):[...prev,c.emp.id])} style={{display:'flex',gap:12,alignItems:'center',padding:'12px 14px',background:sel?'rgba(200,169,110,0.08)':'rgba(255,255,255,0.022)',border:`1px solid ${sel?'rgba(200,169,110,0.3)':'var(--border2)'}`,borderRadius:11,cursor:'pointer',transition:'all 0.18s'}}>
+                  <input type="checkbox" checked={sel} readOnly style={{flexShrink:0}}/>
+                  <div style={{width:34,height:34,borderRadius:9,background:'rgba(200,169,110,0.1)',display:'flex',alignItems:'center',justifyContent:'center',fontSize:12,fontWeight:700,color:'var(--gold)',flexShrink:0}}>{c.emp.avatar}</div>
+                  <div style={{flex:1}}>
+                    <div style={{fontSize:13,fontWeight:600,color:'var(--text)'}}>{c.emp.name} <span style={{fontSize:10,color:'var(--text3)'}}>· {c.emp.dept} · {c.emp.seniority}</span></div>
+                    <div style={{display:'grid',gridTemplateColumns:'repeat(4,1fr)',gap:4,marginTop:6}}>
+                      {[{l:'Skill',v:c.score.skillScore},{l:'Util',v:c.score.utilScore},{l:'Exp',v:c.score.expScore},{l:'Dept',v:c.score.deptScore}].map(s=>(
+                        <div key={s.l} style={{fontSize:9,color:'var(--text3)'}}>{s.l}: <span style={{color:'var(--gold)'}}>{s.v}</span></div>
+                      ))}
+                    </div>
+                  </div>
+                  <div style={{textAlign:'right'}}>
+                    <div style={{fontSize:16,fontWeight:700,color:c.score.totalScore>=70?'var(--green)':c.score.totalScore>=50?'var(--gold)':'var(--red)',fontFamily:'var(--fd)'}}>{c.score.totalScore}</div>
+                    <div style={{fontSize:9,color:'var(--text3)'}}>score</div>
+                    {!c.score.mandatoryMet&&<div style={{fontSize:9,color:'var(--red)'}}>Missing skills</div>}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+          <div style={{display:'flex',gap:8,justifyContent:'space-between'}}>
+            <Btn variant="secondary" onClick={()=>setPhase('results')}>← Back to AI Recommendation</Btn>
+            <Btn onClick={confirm} disabled={overrideTeam.length===0}><Icon n="check" s={13}/> Confirm Override ({overrideTeam.length} selected)</Btn>
+          </div>
+        </div>
+      )}
+
+      {confirmed&&(
+        <div style={{padding:'40px 20px',display:'flex',flexDirection:'column',alignItems:'center',gap:12,textAlign:'center'}}>
+          <div style={{width:52,height:52,borderRadius:'50%',background:'rgba(126,201,140,0.15)',display:'flex',alignItems:'center',justifyContent:'center'}}><Icon n="check" s={24}/></div>
+          <div style={{fontSize:17,fontWeight:600,color:'var(--green)'}}>Team Assigned Successfully!</div>
+          <div style={{fontSize:12,color:'var(--text3)'}}>Project team saved. KPI tracking and incentive calculations are now active for all assigned members.</div>
+        </div>
+      )}
+    </Modal>
+  );
+};
+
+// ─── EDIT PROJECT MODAL ───────────────────────────────────────────────────────
+const EditProjectModal=({project,open,onClose,onSave})=>{
+  const [form,setForm]=useState({...project});
+  return(
+    <Modal open={open} onClose={onClose} title="Edit Project" width={580}>
+      <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:13}}>
+        <Fld label="Project Name"><Inp value={form.name} onChange={e=>setForm(f=>({...f,name:e.target.value}))}/></Fld>
+        <Fld label="Client"><Inp value={form.client} onChange={e=>setForm(f=>({...f,client:e.target.value}))}/></Fld>
+        <Fld label="Status"><Sel value={form.status} onChange={e=>setForm(f=>({...f,status:e.target.value}))}><option value="pre-award">Pre-Award</option><option value="awarded">Awarded</option><option value="completed">Completed</option></Sel></Fld>
+        <Fld label="Phase"><Sel value={form.phase} onChange={e=>setForm(f=>({...f,phase:e.target.value}))}>{PHASES.map(ph=><option key={ph}>{ph}</option>)}</Sel></Fld>
+        <Fld label="Completion (%)"><Inp type="number" min="0" max="100" value={form.completion} onChange={e=>setForm(f=>({...f,completion:Number(e.target.value)}))}/></Fld>
+        <Fld label="Total Billing (₹)"><Inp type="number" value={form.totalBilling} onChange={e=>setForm(f=>({...f,totalBilling:Number(e.target.value)}))}/></Fld>
+        <Fld label="Profit (₹)"><Inp type="number" value={form.profit} onChange={e=>setForm(f=>({...f,profit:Number(e.target.value)}))}/></Fld>
+        <Fld label="Deadline"><Inp type="date" value={form.deadline} onChange={e=>setForm(f=>({...f,deadline:e.target.value}))}/></Fld>
+      </div>
+      <div style={{display:'flex',gap:8,justifyContent:'flex-end',marginTop:18}}>
+        <Btn variant="secondary" onClick={onClose}>Cancel</Btn>
+        <Btn onClick={()=>onSave(form)}><Icon n="check" s={13}/> Save Changes</Btn>
+      </div>
+    </Modal>
+  );
+};
+
+// ═══════════════════════════════════════════════════════════════════════════
+// TIMESHEET PAGE — aligned with Creospace_Timesheet_Tracker.xlsx Daily Log
+// ═══════════════════════════════════════════════════════════════════════════
+const TsPage=({user,timesheets,setTimesheets,projects,isHod,toast})=>{
+  const [showModal,setShowModal]=useState(false);
+  const [fUser,setFUser]=useState(String(user.id));
+  const [viewMode,setViewMode]=useState('log'); // log | summary
+  const blankForm={projectId:'',date:today,phaseCode:'',activityCode:'',hours:'',notes:''};
+  const [form,setForm]=useState(blankForm);
+
+  // Derive billable from activity code
+  const actInfo=ACTIVITY_CODES.find(a=>a.code===form.activityCode);
+  const isBillable=actInfo?.billable??false;
+
+  const visible=isHod
+    ?(fUser==='all'?timesheets:timesheets.filter(t=>t.userId===Number(fUser)))
+    :timesheets.filter(t=>t.userId===user.id);
+
+  // Check if daily total for a user/date meets ≥8h
+  const dailyTotal=(userId,date)=>timesheets.filter(t=>t.userId===userId&&t.date===date).reduce((a,t)=>a+t.billingHours+t.nonBillingHours,0);
+
+  const save=()=>{
+    if(!form.projectId||!form.date||!form.activityCode||!form.hours)return;
+    const hrs=Number(form.hours)||0;
+    const billable=ACTIVITY_CODES.find(a=>a.code===form.activityCode)?.billable??false;
+    const actName=ACTIVITY_CODES.find(a=>a.code===form.activityCode)?.name||form.activityCode;
+    const newEntry={
+      id:Date.now(),userId:user.id,projectId:form.projectId,date:form.date,
+      phaseCode:form.phaseCode,activityCode:form.activityCode,
+      billingHours:billable?hrs:0,nonBillingHours:billable?0:hrs,
+      activity:actName,notes:form.notes
+    };
+    setTimesheets(prev=>[newEntry,...prev]);
+    setShowModal(false);
+    toast('Timesheet entry saved!');
+    setForm(blankForm);
+  };
+
+  const grouped=visible.reduce((acc,t)=>{if(!acc[t.date])acc[t.date]=[];acc[t.date].push(t);return acc;},{});
+
+  // Monthly utilization summary per person
+  const monthSummary=()=>{
+    const months={};
+    timesheets.forEach(t=>{
+      const mo=t.date.slice(0,7);
+      if(!months[mo])months[mo]={};
+      if(!months[mo][t.userId])months[mo][t.userId]={bill:0,nonBill:0};
+      months[mo][t.userId].bill+=t.billingHours;
+      months[mo][t.userId].nonBill+=t.nonBillingHours;
+    });
+    return months;
+  };
+  const summary=monthSummary();
+
+  const totalBill=visible.reduce((a,t)=>a+t.billingHours,0);
+  const totalNonBill=visible.reduce((a,t)=>a+t.nonBillingHours,0);
+  const totalH=totalBill+totalNonBill;
+  const utilPct=totalH>0?Math.round((totalBill/totalH)*100):0;
+
+  return(
+    <div style={{display:'flex',flexDirection:'column',gap:18}}>
+
+      {/* Header row */}
+      <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',flexWrap:'wrap',gap:10}}>
+        <div style={{display:'flex',gap:6,alignItems:'center'}}>
+          {/* View toggle */}
+          <div style={{display:'flex',background:'var(--tag-bg)',borderRadius:9,padding:3,gap:2}}>
+            {[{id:'log',l:'📋 Daily Log'},{id:'summary',l:'📊 Monthly Summary'}].map(v=>(
+              <button key={v.id} onClick={()=>setViewMode(v.id)} style={{padding:'6px 13px',borderRadius:7,border:'none',background:viewMode===v.id?'var(--modal-bg)':'transparent',color:viewMode===v.id?'var(--gold)':'var(--text3)',fontSize:12,fontFamily:'var(--fb)',fontWeight:viewMode===v.id?600:400,cursor:'pointer',whiteSpace:'nowrap'}}>{v.l}</button>
+            ))}
+          </div>
+          {isHod&&<Sel value={fUser} onChange={e=>setFUser(e.target.value)} style={{width:150}}>
+            <option value="all">All Team</option>
+            {USERS.filter(u=>u.role!=='admin').map(u=><option key={u.id} value={u.id}>{u.name}</option>)}
+          </Sel>}
+        </div>
+        <Btn onClick={()=>setShowModal(true)}><Icon n="plus" s={13}/> Log Entry</Btn>
+      </div>
+
+      {/* KPI stats */}
+      <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(130px,1fr))',gap:10}}>
+        {[
+          {l:'Total Hours',v:`${totalH}h`,c:'var(--gold)'},
+          {l:'Billing',v:`${totalBill}h`,c:'var(--green)'},
+          {l:'Non-Billing',v:`${totalNonBill}h`,c:'var(--purple)'},
+          {l:'Utilization',v:`${utilPct}%`,c:utilPct>=85?'var(--green)':utilPct>=70?'var(--gold)':'var(--red)'},
+          {l:'Days Logged',v:Object.keys(grouped).length,c:'var(--blue)'},
+        ].map(s=>(
+          <div key={s.l} style={{background:'var(--surface-alpha2)',border:'1px solid var(--border2)',borderRadius:12,padding:'11px 14px',textAlign:'center'}}>
+            <div style={{fontSize:20,fontWeight:700,color:s.c,fontFamily:'var(--fd)'}}>{s.v}</div>
+            <div style={{fontSize:9,color:'var(--text3)',marginTop:3,textTransform:'uppercase',letterSpacing:'0.08em'}}>{s.l}</div>
+          </div>
+        ))}
+      </div>
+
+      {/* Target indicator */}
+      <div style={{background:'rgba(200,169,110,0.05)',border:'1px solid rgba(200,169,110,0.14)',borderRadius:10,padding:'8px 14px',display:'flex',gap:16,alignItems:'center',flexWrap:'wrap',fontSize:11,color:'var(--text3)'}}>
+        <span>🟢 ≥ 85% On Track</span><span>🟡 70–84% Good</span><span>🔴 &lt; 70% Needs Attention</span>
+        <span style={{marginLeft:'auto',color:'var(--gold)'}}>Target: ≥ 70% billable utilization | Submit by 7:00 PM daily</span>
+      </div>
+
+      {/* ── DAILY LOG VIEW ── */}
+      {viewMode==='log'&&(
+        <div style={{display:'flex',flexDirection:'column',gap:12}}>
+          {Object.entries(grouped).sort(([a],[b])=>b.localeCompare(a)).map(([date,entries])=>{
+            const uid=entries[0]?.userId;
+            const dtotal=dailyTotal(uid,date);
+            const hoursOk=dtotal>=8;
+            return(
+              <div key={date} style={{background:'var(--card-bg)',border:'1px solid var(--border2)',borderRadius:13,overflow:'hidden'}}>
+                <div style={{padding:'10px 17px',borderBottom:'1px solid var(--border3)',display:'flex',justifyContent:'space-between',alignItems:'center',flexWrap:'wrap',gap:8}}>
+                  <span style={{fontSize:13,fontWeight:600,color:'var(--gold)'}}>{new Date(date+'T12:00:00').toLocaleDateString('en-IN',{weekday:'long',day:'numeric',month:'short',year:'numeric'})}</span>
+                  <div style={{display:'flex',gap:10,alignItems:'center'}}>
+                    <span style={{fontSize:11,color:'var(--text3)'}}>{entries.reduce((a,t)=>a+t.billingHours+t.nonBillingHours,0)}h logged</span>
+                    <span style={{fontSize:10,padding:'2px 8px',borderRadius:99,background:hoursOk?'rgba(126,201,140,0.12)':'rgba(224,122,107,0.1)',color:hoursOk?'var(--green)':'var(--red)',border:`1px solid ${hoursOk?'rgba(126,201,140,0.3)':'rgba(224,122,107,0.25)'}`,fontWeight:600}}>
+                      {hoursOk?'✓ Hours OK':'⚠ < 8h'}
+                    </span>
+                  </div>
+                </div>
+                {/* Table header */}
+                <div style={{display:'grid',gridTemplateColumns:'1fr 80px 80px 90px 70px 60px 60px',gap:0,padding:'7px 17px',borderBottom:'1px solid var(--border3)',background:'var(--surface-alpha2)'}}>
+                  {['Project','Phase','Activity','Description','Notes','Hrs','Billable'].map(h=>(
+                    <div key={h} style={{fontSize:9,color:'var(--text3)',textTransform:'uppercase',letterSpacing:'0.07em',fontWeight:600}}>{h}</div>
+                  ))}
+                </div>
+                {entries.map(e=>{
+                  const proj=[...projects,...INIT_PROJECTS].find(p=>p.id===e.projectId);
+                  const act=ACTIVITY_CODES.find(a=>a.code===e.activityCode);
+                  const phase=PHASES_DB.find(p=>p.code===e.phaseCode);
+                  const hrs=e.billingHours+e.nonBillingHours;
+                  const billable=e.billingHours>0;
+                  return(
+                    <div key={e.id} style={{display:'grid',gridTemplateColumns:'1fr 80px 80px 90px 70px 60px 60px',gap:0,padding:'10px 17px',borderBottom:'1px solid var(--border3)',alignItems:'center'}}>
+                      <div>
+                        <div style={{fontSize:12,fontWeight:600,color:'var(--text)',overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{proj?.name||e.projectId}</div>
+                        <div style={{fontSize:10,color:'var(--text3)'}}>{e.projectId}</div>
+                      </div>
+                      <div style={{fontSize:10}}>{e.phaseCode?<span style={{background:'var(--tag-bg)',border:'1px solid var(--tag-border)',borderRadius:5,padding:'2px 6px',color:'var(--text2)'}}>{e.phaseCode}</span>:<span style={{color:'var(--text3)'}}>—</span>}</div>
+                      <div>
+                        <div style={{fontSize:10,fontWeight:600,color:'var(--text)'}}>{e.activityCode||'—'}</div>
+                        <div style={{fontSize:9,color:'var(--text3)',overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap',maxWidth:76}}>{act?.name||e.activity}</div>
+                      </div>
+                      <div style={{fontSize:10,color:'var(--text2)',overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap',paddingRight:8}}>{e.activity}</div>
+                      <div style={{fontSize:10,color:'var(--text3)',overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{e.notes||'—'}</div>
+                      <div style={{fontSize:14,fontWeight:700,color:billable?'var(--green)':'var(--purple)'}}>{hrs}h</div>
+                      <div>
+                        <span style={{fontSize:10,padding:'2px 6px',borderRadius:99,background:billable?'rgba(126,201,140,0.1)':'rgba(164,130,220,0.1)',color:billable?'var(--green)':'var(--purple)',border:`1px solid ${billable?'rgba(126,201,140,0.25)':'rgba(164,130,220,0.25)'}`}}>
+                          {billable?'Yes':'No'}
+                        </span>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            );
+          })}
+        </div>
+      )}
+
+      {/* ── MONTHLY SUMMARY VIEW ── */}
+      {viewMode==='summary'&&(
+        <div style={{background:'var(--card-bg)',border:'1px solid var(--border2)',borderRadius:14,overflow:'hidden'}}>
+          <div style={{padding:'13px 18px',borderBottom:'1px solid var(--border2)',display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+            <h3 style={{margin:0,fontSize:14,fontFamily:'var(--fd)',color:'var(--text)'}}>Monthly Utilization Summary</h3>
+            <div style={{fontSize:11,color:'var(--text3)'}}>Auto-calculated from Daily Log</div>
+          </div>
+          <div style={{overflowX:'auto'}}>
+            <table style={{width:'100%',borderCollapse:'collapse',fontSize:12}}>
+              <thead>
+                <tr style={{borderBottom:'1px solid var(--border2)',background:'var(--surface-alpha2)'}}>
+                  {['#','Employee','Role','Metric',...Object.keys(summary).sort(),'FY Total'].map(h=>(
+                    <th key={h} style={{padding:'9px 13px',textAlign:'left',color:'var(--text3)',fontWeight:500,fontSize:10,textTransform:'uppercase',whiteSpace:'nowrap'}}>{h}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {USERS.filter(u=>u.role!=='admin').map((u,idx)=>{
+                  const months=Object.keys(summary).sort();
+                  const fyBill=months.reduce((a,mo)=>a+(summary[mo]?.[u.id]?.bill||0),0);
+                  const fyNonBill=months.reduce((a,mo)=>a+(summary[mo]?.[u.id]?.nonBill||0),0);
+                  const fyTotal=fyBill+fyNonBill;
+                  const fyUtil=fyTotal>0?Math.round((fyBill/fyTotal)*100):0;
+                  return[
+                    ['Total Hours',mo=>((summary[mo]?.[u.id]?.bill||0)+(summary[mo]?.[u.id]?.nonBill||0)),fyTotal,'var(--text2)'],
+                    ['Billable Hrs',mo=>(summary[mo]?.[u.id]?.bill||0),fyBill,'var(--green)'],
+                    ['Non-Billable',mo=>(summary[mo]?.[u.id]?.nonBill||0),fyNonBill,'var(--purple)'],
+                    ['Utilization %',mo=>{const b=summary[mo]?.[u.id]?.bill||0;const t=b+(summary[mo]?.[u.id]?.nonBill||0);return t>0?Math.round((b/t)*100)+'%':'—';},fyUtil+'%',fyUtil>=85?'var(--green)':fyUtil>=70?'var(--gold)':'var(--red)'],
+                  ].map(([metric,valFn,fyVal,col],ri)=>(
+                    <tr key={`${u.id}-${metric}`} style={{borderBottom:'1px solid var(--border3)',background:ri===3?'rgba(200,169,110,0.03)':'transparent'}}>
+                      {ri===0&&<td rowSpan={4} style={{padding:'10px 13px',color:'var(--text3)',fontWeight:600,verticalAlign:'middle',borderRight:'1px solid var(--border3)'}}>{idx+1}</td>}
+                      {ri===0&&<td rowSpan={4} style={{padding:'10px 13px',verticalAlign:'middle',borderRight:'1px solid var(--border3)'}}>
+                        <div style={{display:'flex',gap:7,alignItems:'center'}}>
+                          <div style={{width:26,height:26,borderRadius:'50%',background:'rgba(200,169,110,0.1)',display:'flex',alignItems:'center',justifyContent:'center',fontSize:9,fontWeight:700,color:'var(--gold)',flexShrink:0}}>{u.avatar}</div>
+                          <div><div style={{fontSize:12,fontWeight:600,color:'var(--text)',whiteSpace:'nowrap'}}>{u.name}</div><div style={{fontSize:9,color:'var(--text3)'}}>{u.excelName||u.dept}</div></div>
+                        </div>
+                      </td>}
+                      {ri===0&&<td rowSpan={4} style={{padding:'10px 13px',verticalAlign:'middle',borderRight:'1px solid var(--border3)'}}><Badge text={u.role} type={u.role}/></td>}
+                      <td style={{padding:'6px 13px',color:'var(--text3)',fontSize:11,whiteSpace:'nowrap'}}>{metric}</td>
+                      {months.map(mo=>(
+                        <td key={mo} style={{padding:'6px 13px',textAlign:'right',color:ri===3?(Number(String(valFn(mo)).replace('%',''))>=85?'var(--green)':Number(String(valFn(mo)).replace('%',''))>=70?'var(--gold)':'var(--red)'):'var(--text2)',fontWeight:ri===3?700:400,whiteSpace:'nowrap'}}>{String(valFn(mo))||'—'}</td>
+                      ))}
+                      <td style={{padding:'6px 13px',textAlign:'right',color:col,fontWeight:700,borderLeft:'1px solid var(--border3)',whiteSpace:'nowrap'}}>{fyVal||'—'}</td>
+                    </tr>
+                  ));
+                })}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
+
+      {/* ── ADD ENTRY MODAL — Excel Daily Log format ── */}
+      <Modal open={showModal} onClose={()=>setShowModal(false)} title="📋 Log Daily Timesheet Entry" width={580}>
+        <div style={{display:'flex',flexDirection:'column',gap:13}}>
+          {/* Excel-style info */}
+          <div style={{background:'rgba(200,169,110,0.06)',border:'1px solid rgba(200,169,110,0.16)',borderRadius:9,padding:'9px 13px',fontSize:11,color:'var(--text3)',display:'flex',gap:7,alignItems:'center'}}>
+            <Icon n="alert" s={12}/> Submit by 7:00 PM daily. Log each project separately. Daily total should be ≥ 8 hours.
+          </div>
+
+          <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:12}}>
+            <Fld label="Date"><Inp type="date" value={form.date} onChange={e=>setForm(f=>({...f,date:e.target.value}))}/></Fld>
+            <Fld label="Project Code">
+              <Sel value={form.projectId} onChange={e=>setForm(f=>({...f,projectId:e.target.value}))}>
+                <option value="">Select project…</option>
+                {projects.map(p=><option key={p.id} value={p.id}>{p.id} — {p.name}</option>)}
+              </Sel>
+            </Fld>
+          </div>
+
+          <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:12}}>
+            <Fld label="Phase Code">
+              <Sel value={form.phaseCode} onChange={e=>setForm(f=>({...f,phaseCode:e.target.value}))}>
+                <option value="">Select phase…</option>
+                {PHASES_DB.map(p=><option key={p.code} value={p.code}>{p.code} — {p.name}</option>)}
+              </Sel>
+            </Fld>
+            <Fld label="Activity Code">
+              <Sel value={form.activityCode} onChange={e=>setForm(f=>({...f,activityCode:e.target.value}))}>
+                <option value="">Select activity…</option>
+                <optgroup label="── Billable ──">
+                  {ACTIVITY_CODES.filter(a=>a.billable).map(a=><option key={a.code} value={a.code}>{a.code} — {a.name}</option>)}
+                </optgroup>
+                <optgroup label="── Non-Billable ──">
+                  {ACTIVITY_CODES.filter(a=>!a.billable).map(a=><option key={a.code} value={a.code}>{a.code} — {a.name}</option>)}
+                </optgroup>
+              </Sel>
+            </Fld>
+          </div>
+
+          {/* Billable indicator — auto-derived */}
+          {form.activityCode&&(
+            <div style={{background:isBillable?'rgba(126,201,140,0.08)':'rgba(164,130,220,0.08)',border:`1px solid ${isBillable?'rgba(126,201,140,0.25)':'rgba(164,130,220,0.25)'}`,borderRadius:9,padding:'8px 13px',display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+              <span style={{fontSize:12,color:'var(--text2)'}}>{actInfo?.name}</span>
+              <span style={{fontSize:11,fontWeight:700,color:isBillable?'var(--green)':'var(--purple)',padding:'2px 9px',background:isBillable?'rgba(126,201,140,0.12)':'rgba(164,130,220,0.12)',borderRadius:99}}>
+                {isBillable?'✓ Billable':'✗ Non-Billable'}
+              </span>
+            </div>
+          )}
+
+          <Fld label="Hours Logged">
+            <Inp type="number" min="0.5" max="12" step="0.5" value={form.hours} onChange={e=>setForm(f=>({...f,hours:e.target.value}))} placeholder="e.g. 3"/>
+          </Fld>
+          <Fld label="Notes / Task Description">
+            <Txta value={form.notes} onChange={e=>setForm(f=>({...f,notes:e.target.value}))} placeholder="e.g. Ground floor plan – revision 2"/>
+          </Fld>
+
+          {/* Daily total preview */}
+          {form.date&&(()=>{
+            const existingHrs=dailyTotal(user.id,form.date);
+            const newTotal=existingHrs+(Number(form.hours)||0);
+            return(
+              <div style={{background:'var(--surface-alpha2)',borderRadius:9,padding:'9px 13px',display:'flex',justifyContent:'space-between',fontSize:11}}>
+                <span style={{color:'var(--text3)'}}>Daily total after this entry:</span>
+                <span style={{color:newTotal>=8?'var(--green)':'var(--gold)',fontWeight:700}}>{newTotal}h {newTotal>=8?'✓ OK':'(target: 8h)'}</span>
+              </div>
+            );
+          })()}
+
+          <div style={{display:'flex',gap:8,justifyContent:'flex-end',marginTop:4}}>
+            <Btn variant="secondary" onClick={()=>setShowModal(false)}>Cancel</Btn>
+            <Btn onClick={save} disabled={!form.projectId||!form.date||!form.activityCode||!form.hours}><Icon n="check" s={13}/> Save Entry</Btn>
+          </div>
+        </div>
+      </Modal>
+    </div>
+  );
+};
+
+// ═══════════════════════════════════════════════════════════════════════════
+// KPI PAGE
+// ═══════════════════════════════════════════════════════════════════════════
+const KpiPage=({user,projects,timesheets,isHod})=>{
+  const kd=projects.map(p=>{
+    const ts=timesheets.filter(t=>t.projectId===p.id);
+    const th=ts.reduce((a,t)=>a+t.billingHours+t.nonBillingHours,0);
+    const bh=ts.reduce((a,t)=>a+t.billingHours,0);
+    const br=th?Math.round((bh/th)*100):0;
+    const ot=p.completion>=50&&new Date(p.deadline)>=new Date();
+    const ip=p.completion>=100?100:p.completion>=75?75:p.completion>=50?50:25;
+    return{...p,th,bh,br,ot,ip};
+  });
+  const metrics=[
+    {l:'Billing Efficiency',v:kd.length?Math.round(kd.reduce((a,k)=>a+k.br,0)/kd.length):0,t:75,u:'%',d:'Billing hrs / Total hrs'},
+    {l:'Project Completion',v:kd.length?Math.round(kd.reduce((a,k)=>a+k.completion,0)/kd.length):0,t:80,u:'%',d:'Avg across active projects'},
+    {l:'On-Time Delivery',v:kd.length?Math.round((kd.filter(k=>k.ot).length/kd.length)*100):0,t:90,u:'%',d:'Within stipulated deadline'},
+    {l:'Incentive Achievement',v:kd.length?Math.round(kd.reduce((a,k)=>a+k.ip,0)/kd.length):0,t:80,u:'%',d:'% of max incentive earned'},
+  ];
+  const months=['Oct','Nov','Dec','Jan','Feb','Mar'];
+  return(
+    <div style={{display:'flex',flexDirection:'column',gap:20}}>
+      <p style={{margin:0,fontSize:12,color:'var(--text3)'}}>KPI auto-calculated from timesheets & project progress. Updated month-on-month.</p>
+      <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(200px,1fr))',gap:12}}>
+        {metrics.map(k=>{
+          const pct=Math.min((k.v/k.t)*100,100);
+          const c=pct>=100?'var(--green)':pct>=75?'var(--gold)':'var(--red)';
+          return(
+            <div key={k.l} style={{background:'var(--card-bg)',border:'1px solid var(--border2)',borderRadius:15,padding:'16px 18px',display:'flex',flexDirection:'column',gap:11}}>
+              <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start'}}>
+                <div style={{fontSize:12,fontWeight:600,color:'var(--text)'}}>{k.l}</div>
+                <div style={{fontSize:22,fontWeight:700,color:c,fontFamily:'var(--fd)'}}>{k.v}{k.u}</div>
+              </div>
+              <Bar v={k.v} max={k.t} color={c} h={7}/>
+              <div style={{display:'flex',justifyContent:'space-between',fontSize:10,color:'var(--text3)'}}>
+                <span>{k.d}</span><span>Target: {k.t}{k.u}</span>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+      <div style={{background:'var(--card-bg)',border:'1px solid var(--border2)',borderRadius:14,overflow:'hidden'}}>
+        <div style={{padding:'13px 17px',borderBottom:'1px solid var(--border2)'}}><h3 style={{margin:0,fontSize:14,fontFamily:'var(--fd)',color:'var(--text)'}}>Month-on-Month KPI</h3></div>
+        <div style={{overflowX:'auto'}}>
+          <table style={{width:'100%',borderCollapse:'collapse',fontSize:12}}>
+            <thead><tr style={{borderBottom:'1px solid var(--border2)'}}><th style={{padding:'9px 16px',textAlign:'left',color:'var(--text3)',fontWeight:500,fontSize:10,textTransform:'uppercase'}}>Metric</th>{months.map(m=><th key={m} style={{padding:'9px 13px',textAlign:'right',color:'var(--text3)',fontWeight:500,fontSize:10,textTransform:'uppercase'}}>{m}</th>)}</tr></thead>
+            <tbody>{metrics.map((k,i)=>{
+              const hist=months.map((_,mi)=>Math.max(30,Math.min(100,k.v-(5-mi)*4+(i+mi)%7)));
+              return(
+                <tr key={k.l} style={{borderBottom:'1px solid var(--border3)'}}>
+                  <td style={{padding:'11px 16px',color:'var(--text)',fontWeight:500}}>{k.l}</td>
+                  {hist.map((v,mi)=>{const c=v>=k.t?'var(--green)':v>=k.t*0.8?'var(--gold)':'var(--red)';const il=mi===months.length-1;return <td key={mi} style={{padding:'11px 13px',textAlign:'right',color:il?c:'var(--text3)',fontWeight:il?700:400}}>{v}{k.u}</td>;})}
+                </tr>
+              );
+            })}</tbody>
+          </table>
+        </div>
+      </div>
+      <div style={{background:'var(--card-bg)',border:'1px solid var(--border2)',borderRadius:14,overflow:'hidden'}}>
+        <div style={{padding:'13px 17px',borderBottom:'1px solid var(--border2)'}}><h3 style={{margin:0,fontSize:14,fontFamily:'var(--fd)',color:'var(--text)'}}>Project KPI Breakdown</h3></div>
+        <div style={{overflowX:'auto'}}>
+          <table style={{width:'100%',borderCollapse:'collapse',fontSize:12}}>
+            <thead><tr style={{borderBottom:'1px solid var(--border2)'}}>{['Project','Phase','Completion','Bill Rate','On-Time','Incentive %','Status'].map(h=><th key={h} style={{padding:'9px 13px',textAlign:'left',color:'var(--text3)',fontWeight:500,fontSize:10,textTransform:'uppercase'}}>{h}</th>)}</tr></thead>
+            <tbody>{kd.map(k=>(
+              <tr key={k.id} style={{borderBottom:'1px solid var(--border3)'}}>
+                <td style={{padding:'11px 13px',color:'var(--text)',fontWeight:600,maxWidth:160}}><div style={{overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{k.name}</div></td>
+                <td style={{padding:'11px 13px',color:'var(--text3)',fontSize:11}}>{k.phase}</td>
+                <td style={{padding:'11px 13px'}}><div style={{display:'flex',gap:7,alignItems:'center'}}><div style={{width:55}}><Bar v={k.completion} color={k.completion>=50?'var(--green)':'var(--gold)'} h={4}/></div><span style={{color:'var(--gold)',fontWeight:600}}>{k.completion}%</span></div></td>
+                <td style={{padding:'11px 13px',color:k.br>=75?'var(--green)':'var(--gold)',fontWeight:600}}>{k.br}%</td>
+                <td style={{padding:'11px 13px',color:k.ot?'var(--green)':'var(--red)'}}>{k.ot?'✓ Yes':'✗ Risk'}</td>
+                <td style={{padding:'11px 13px',color:'var(--purple)',fontWeight:600}}>{k.ip}%</td>
+                <td style={{padding:'11px 13px'}}><Badge text={k.status} type={k.status}/></td>
+              </tr>
+            ))}</tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// ═══════════════════════════════════════════════════════════════════════════
+// SALARY PAGE
+// ═══════════════════════════════════════════════════════════════════════════
+const SalaryPage=({user,projects,base,inc,isHod,allProj,users})=>{
+  const [vid,setVid]=useState(user.id);
+  const sel=(users||USERS).find(u=>u.id===Number(vid))||user;
+  const sp=isHod?allProj.filter(p=>p.assignedTeam?.includes(sel.id)):projects;
+  const sb=sel.salary;
+
+  // CAPPED: earned per project never exceeds the admin-set cap
+  const calcEarned=(p,uid)=>{
+    const cap=p.targetIncentive?.[uid]||0;
+    if(!cap) return 0;
+    const raw=Math.round(cap*(p.completion/100));
+    return Math.min(raw, cap); // hard cap
+  };
+  const si=sp.reduce((s,p)=>s+calcEarned(p,sel.id),0);
+  const totalMaxInc=sp.reduce((s,p)=>s+(p.targetIncentive?.[sel.id]||0),0);
+  const capPct=totalMaxInc>0?Math.round((si/totalMaxInc)*100):0;
+
+  return(
+    <div style={{display:'flex',flexDirection:'column',gap:20}}>
+      <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',flexWrap:'wrap',gap:10}}>
+        <p style={{margin:0,fontSize:12,color:'var(--text3)'}}>Real-time salary tracker — incentives are capped per project by Admin</p>
+        {isHod&&<Sel value={vid} onChange={e=>setVid(Number(e.target.value))} style={{width:200}}>{(users||USERS).map(u=><option key={u.id} value={u.id}>{u.name}</option>)}</Sel>}
+      </div>
+
+      {/* Earnings Banner */}
+      <div style={{background:'var(--banner-bg)',border:'1px solid rgba(200,169,110,0.2)',borderRadius:18,padding:'24px 28px',display:'flex',justifyContent:'space-between',alignItems:'flex-start',flexWrap:'wrap',gap:16}}>
+        <div>
+          <div style={{fontSize:11,color:'var(--text3)',marginBottom:4}}>Total Earnings — April 2025</div>
+          <div style={{fontSize:44,fontFamily:'var(--fd)',color:'var(--gold)',fontWeight:700,letterSpacing:'-0.02em'}}>{fmt(sb+si)}</div>
+          <div style={{display:'flex',gap:22,marginTop:10,flexWrap:'wrap'}}>
+            <div><div style={{fontSize:9,color:'var(--text3)',textTransform:'uppercase',letterSpacing:'0.08em'}}>Fixed Salary</div><div style={{fontSize:18,fontWeight:600,color:'var(--green)'}}>{fmt(sb)}</div></div>
+            <div><div style={{fontSize:9,color:'var(--text3)',textTransform:'uppercase',letterSpacing:'0.08em'}}>Incentives Earned</div><div style={{fontSize:18,fontWeight:600,color:'var(--purple)'}}>{fmt(si)}</div></div>
+            <div><div style={{fontSize:9,color:'var(--text3)',textTransform:'uppercase',letterSpacing:'0.08em'}}>Max Possible</div><div style={{fontSize:18,fontWeight:600,color:'var(--blue)'}}>{fmt(totalMaxInc)}</div></div>
+          </div>
+        </div>
+        <div style={{textAlign:'right'}}>
+          {/* Incentive cap meter */}
+          <div style={{fontSize:11,color:'var(--text3)',marginBottom:6}}>Incentive Cap Usage</div>
+          <div style={{width:120}}>
+            <div style={{display:'flex',justifyContent:'space-between',fontSize:11,marginBottom:4}}>
+              <span style={{color:'var(--text3)'}}>Earned</span>
+              <span style={{color:'var(--gold)',fontWeight:700}}>{capPct}%</span>
+            </div>
+            <Bar v={capPct} color={capPct>=100?'var(--green)':capPct>=70?'var(--gold)':'var(--blue)'} h={8}/>
+            <div style={{fontSize:9,color:'var(--text3)',marginTop:3,textAlign:'right'}}>{fmt(si)} of {fmt(totalMaxInc)} cap</div>
+          </div>
+          <div style={{fontSize:10,color:'rgba(224,122,107,0.7)',marginTop:8,background:'rgba(224,122,107,0.07)',borderRadius:7,padding:'3px 9px',display:'inline-block'}}>🔒 Admin-set salary &amp; cap</div>
+        </div>
+      </div>
+
+      {/* Project incentive rows */}
+      <div style={{background:'var(--card-bg)',border:'1px solid var(--border2)',borderRadius:14,overflow:'hidden'}}>
+        <div style={{padding:'13px 17px',borderBottom:'1px solid var(--border2)',display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+          <h3 style={{margin:0,fontSize:14,fontFamily:'var(--fd)',color:'var(--text)'}}>Project-Wise Incentive Breakdown</h3>
+          <div style={{fontSize:11,color:'var(--text3)',display:'flex',gap:6,alignItems:'center'}}>
+            <span style={{width:8,height:8,borderRadius:'50%',background:'var(--red)',display:'inline-block'}}/>Cap enforced per project
+          </div>
+        </div>
+        {sp.map(p=>{
+          const cap=p.targetIncentive?.[sel.id]||0;
+          const raw=cap?Math.round(cap*(p.completion/100)):0;
+          const earned=Math.min(raw,cap);
+          const isAtCap=earned>=cap&&cap>0;
+          const cost=p.costPerEmployee?.[sel.id]||0;
+          const pct=cap>0?Math.round((earned/cap)*100):0;
+          return(
+            <div key={p.id} style={{padding:'15px 17px',borderBottom:'1px solid var(--border3)',display:'flex',flexDirection:'column',gap:9}}>
+              <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start',flexWrap:'wrap',gap:7}}>
+                <div>
+                  <div style={{fontSize:13,fontWeight:600,color:'var(--text)'}}>{p.name}</div>
+                  <div style={{fontSize:11,color:'var(--text3)'}}>{p.client} · {p.phase}</div>
+                  <div style={{marginTop:4,display:'flex',gap:4,flexWrap:'wrap'}}>
+                    <Badge text={p.status} type={p.status}/>
+                    {isAtCap&&<span style={{fontSize:9,color:'var(--green)',background:'rgba(126,201,140,0.1)',borderRadius:99,padding:'1px 7px',border:'1px solid rgba(126,201,140,0.25)'}}>✓ Cap Reached</span>}
+                    {cap===0&&<span style={{fontSize:9,color:'var(--text3)',background:'var(--tag-bg)',borderRadius:99,padding:'1px 7px'}}>No incentive set</span>}
+                  </div>
+                </div>
+                <div style={{textAlign:'right'}}>
+                  <div style={{fontSize:20,fontWeight:700,color:isAtCap?'var(--green)':'var(--purple)'}}>{fmt(earned)}</div>
+                  <div style={{fontSize:10,color:'var(--text3)'}}>cap: {fmt(cap)}</div>
+                  <div style={{fontSize:10,color:'var(--gold)',marginTop:2}}>{pct}% of cap used</div>
+                </div>
+              </div>
+              <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(110px,1fr))',gap:7}}>
+                {[
+                  {l:'Completion',v:`${p.completion}%`,c:p.completion>=50?'var(--green)':'var(--gold)'},
+                  {l:'Cost Allocated',v:fmt(cost),c:'var(--blue)'},
+                  {l:'Incentive Cap',v:fmt(cap),c:'var(--red)'},
+                  {l:'Earned',v:fmt(earned),c:isAtCap?'var(--green)':'var(--purple)'},
+                ].map(s=>(
+                  <div key={s.l} style={{background:'var(--surface-alpha2)',borderRadius:8,padding:'6px 10px'}}>
+                    <div style={{fontSize:9,color:'var(--text3)',textTransform:'uppercase'}}>{s.l}</div>
+                    <div style={{fontSize:12,fontWeight:700,color:s.c}}>{s.v}</div>
+                  </div>
+                ))}
+              </div>
+              {/* Progress to cap */}
+              <div>
+                <div style={{display:'flex',justifyContent:'space-between',fontSize:10,color:'var(--text3)',marginBottom:3}}>
+                  <span>Progress towards cap</span>
+                  <span style={{color:isAtCap?'var(--green)':'var(--gold)'}}>{pct}%{isAtCap?' · 🔒 Capped':''}</span>
+                </div>
+                <Bar v={pct} color={isAtCap?'var(--green)':pct>=70?'var(--gold)':'var(--blue)'} h={6}/>
+                {!isAtCap&&cap>0&&<div style={{fontSize:9,color:'rgba(200,169,110,0.45)',marginTop:3}}>{fmt(cap-earned)} remaining to reach cap</div>}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Projection */}
+      <div style={{background:'var(--card-bg)',border:'1px solid var(--border2)',borderRadius:14,padding:'16px 20px'}}>
+        <h3 style={{margin:'0 0 12px',fontSize:14,fontFamily:'var(--fd)',color:'var(--text)'}}>Q2 2025 Projection</h3>
+        <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(145px,1fr))',gap:10}}>
+          {[
+            {l:'Base (3mo)',v:fmt(sb*3),c:'var(--green)'},
+            {l:'Max Incentives Q2',v:fmt(totalMaxInc),c:'var(--red)'},
+            {l:'Projected Q2',v:fmt(sb*3+si),c:'var(--gold)'},
+            {l:'Annual Run Rate',v:fmt((sb+si)*12),c:'var(--blue)'},
+          ].map(s=>(
+            <div key={s.l} style={{background:'var(--surface-alpha2)',borderRadius:11,padding:'12px 13px',textAlign:'center'}}>
+              <div style={{fontSize:14,fontWeight:700,color:s.c,fontFamily:'var(--fd)'}}>{s.v}</div>
+              <div style={{fontSize:10,color:'var(--text3)',marginTop:4}}>{s.l}</div>
+            </div>
+          ))}
+        </div>
+        {totalMaxInc>0&&<div style={{marginTop:12,padding:'10px 14px',background:'rgba(224,122,107,0.06)',border:'1px solid rgba(224,122,107,0.15)',borderRadius:9,fontSize:11,color:'rgba(224,122,107,0.8)',display:'flex',gap:7,alignItems:'center'}}>
+          <Icon n="alert" s={12}/> Total incentive cap across all projects: <strong>{fmt(totalMaxInc)}</strong>. Earnings cannot exceed this regardless of completion.
+        </div>}
+      </div>
+    </div>
+  );
+};
+
+// ═══════════════════════════════════════════════════════════════════════════
+// ADMIN PAGE — Salary & Incentive Cap Management
+// ═══════════════════════════════════════════════════════════════════════════
+const AdminPage=({users,setUsers,projects,setProjects,toast})=>{
+  const [tab,setTab]=useState('salaries'); // salaries | caps
+  const [editUser,setEditUser]=useState(null);
+  const [editProj,setEditProj]=useState(null);
+  const [salaryDraft,setSalaryDraft]=useState({});
+  const [capDraft,setCapDraft]=useState({});
+
+  // Open salary editor for a user
+  const openSalary=(u)=>{setEditUser(u);setSalaryDraft({salary:u.salary});};
+  const saveSalary=()=>{
+    setUsers(prev=>prev.map(u=>u.id===editUser.id?{...u,salary:Number(salaryDraft.salary)||u.salary}:u));
+    setEditUser(null);
+    toast(`Salary updated for ${editUser.name}`);
+  };
+
+  // Open incentive cap editor for a project
+  const openCaps=(p)=>{
+    setEditProj(p);
+    const d={};
+    (p.assignedTeam||[]).forEach(uid=>{ d[uid]=p.targetIncentive?.[uid]||0; });
+    setCapDraft(d);
+  };
+  const saveCaps=()=>{
+    setProjects(prev=>prev.map(p=>{
+      if(p.id!==editProj.id)return p;
+      const ti={...p.targetIncentive};
+      Object.entries(capDraft).forEach(([uid,val])=>{ ti[Number(uid)]=Number(val)||0; });
+      return{...p,targetIncentive:ti};
+    }));
+    setEditProj(null);
+    toast(`Incentive caps updated for ${editProj.name}`);
+  };
+
+  return(
+    <div style={{display:'flex',flexDirection:'column',gap:20}}>
+      {/* Admin badge */}
+      <div style={{background:'linear-gradient(135deg,rgba(224,122,107,0.08),rgba(200,169,110,0.06))',border:'1px solid rgba(224,122,107,0.2)',borderRadius:13,padding:'13px 18px',display:'flex',gap:12,alignItems:'center'}}>
+        <div style={{width:36,height:36,borderRadius:10,background:'rgba(224,122,107,0.15)',display:'flex',alignItems:'center',justifyContent:'center',flexShrink:0}}><Icon n="admin" s={18}/></div>
+        <div>
+          <div style={{fontSize:13,fontWeight:600,color:'var(--red)',marginBottom:2}}>Admin — Salary &amp; Incentive Management</div>
+          <div style={{fontSize:11,color:'var(--text3)'}}>Set fixed monthly salaries for all employees. Define the maximum incentive cap per employee per project. Employees cannot earn beyond the set cap.</div>
+        </div>
+      </div>
+
+      {/* Tabs */}
+      <div style={{display:'flex',gap:0,background:'var(--tag-bg)',borderRadius:11,padding:4,alignSelf:'flex-start'}}>
+        {[{id:'salaries',label:'💰 Fixed Salaries'},{id:'caps',label:'🔒 Incentive Caps'}].map(t=>(
+          <button key={t.id} onClick={()=>setTab(t.id)} style={{padding:'9px 20px',borderRadius:8,border:'none',background:tab===t.id?'var(--modal-bg)':'transparent',color:tab===t.id?'var(--gold)':'var(--text3)',fontSize:13,fontFamily:'var(--fb)',fontWeight:tab===t.id?600:400,cursor:'pointer',transition:'all 0.18s',boxShadow:tab===t.id?'var(--shadow)':'none'}}>
+            {t.label}
+          </button>
+        ))}
+      </div>
+
+      {/* ── SALARIES TAB ── */}
+      {tab==='salaries'&&(
+        <div style={{display:'flex',flexDirection:'column',gap:12}}>
+          <p style={{margin:0,fontSize:12,color:'var(--text3)'}}>Set the fixed monthly salary for each employee. This is the guaranteed base pay regardless of project performance.</p>
+          <div style={{background:'var(--card-bg)',border:'1px solid var(--border2)',borderRadius:14,overflow:'hidden'}}>
+            <div style={{padding:'12px 18px',borderBottom:'1px solid var(--border2)',display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+              <h3 style={{margin:0,fontSize:14,fontFamily:'var(--fd)',color:'var(--text)'}}>Employee Salary Register</h3>
+              <div style={{fontSize:11,color:'var(--text3)'}}>Total payroll: <span style={{color:'var(--gold)',fontWeight:600}}>{fmt(users.reduce((a,u)=>a+u.salary,0))}/mo</span></div>
+            </div>
+            {users.map(u=>{
+              const projs=projects.filter(p=>p.assignedTeam?.includes(u.id));
+              const maxInc=projs.reduce((s,p)=>s+(p.targetIncentive?.[u.id]||0),0);
+              return(
+                <div key={u.id} style={{padding:'14px 18px',borderBottom:'1px solid var(--border3)',display:'flex',justifyContent:'space-between',alignItems:'center',flexWrap:'wrap',gap:10}}>
+                  <div style={{display:'flex',gap:12,alignItems:'center'}}>
+                    <div style={{width:38,height:38,borderRadius:10,background:'rgba(200,169,110,0.1)',border:'1px solid rgba(200,169,110,0.18)',display:'flex',alignItems:'center',justifyContent:'center',fontSize:12,fontWeight:700,color:'var(--gold)',flexShrink:0}}>{u.avatar}</div>
+                    <div>
+                      <div style={{fontSize:13,fontWeight:600,color:'var(--text)'}}>{u.name}</div>
+                      <div style={{fontSize:11,color:'var(--text3)'}}>{u.dept} · <span style={{textTransform:'capitalize'}}>{u.seniority}</span></div>
+                    </div>
+                  </div>
+                  <div style={{display:'flex',gap:16,alignItems:'center',flexWrap:'wrap'}}>
+                    <div style={{textAlign:'center'}}>
+                      <div style={{fontSize:9,color:'var(--text3)',textTransform:'uppercase',letterSpacing:'0.08em',marginBottom:2}}>Fixed Salary/mo</div>
+                      <div style={{fontSize:18,fontWeight:700,color:'var(--green)',fontFamily:'var(--fd)'}}>{fmt(u.salary)}</div>
+                    </div>
+                    <div style={{textAlign:'center'}}>
+                      <div style={{fontSize:9,color:'var(--text3)',textTransform:'uppercase',letterSpacing:'0.08em',marginBottom:2}}>Max Incentive Cap</div>
+                      <div style={{fontSize:15,fontWeight:600,color:'var(--red)'}}>{maxInc>0?fmt(maxInc):'—'}</div>
+                    </div>
+                    <div style={{textAlign:'center'}}>
+                      <div style={{fontSize:9,color:'var(--text3)',textTransform:'uppercase',letterSpacing:'0.08em',marginBottom:2}}>Annual CTC</div>
+                      <div style={{fontSize:14,fontWeight:600,color:'var(--blue)'}}>{fmt((u.salary+maxInc/4)*12)}</div>
+                    </div>
+                    <Btn size="sm" variant="secondary" onClick={()=>openSalary(u)}><Icon n="edit" s={12}/> Edit</Btn>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+          {/* Summary */}
+          <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(160px,1fr))',gap:10}}>
+            {[
+              {l:'Total Monthly Payroll',v:fmt(users.reduce((a,u)=>a+u.salary,0)),c:'var(--green)'},
+              {l:'Annual Payroll',v:fmt(users.reduce((a,u)=>a+u.salary,0)*12),c:'var(--gold)'},
+              {l:'Total Incentive Caps',v:fmt(projects.reduce((a,p)=>a+Object.values(p.targetIncentive||{}).reduce((x,y)=>x+y,0),0)),c:'var(--red)'},
+              {l:'Headcount',v:users.length,c:'var(--blue)'},
+            ].map(s=>(
+              <div key={s.l} style={{background:'var(--surface-alpha2)',borderRadius:11,padding:'13px 15px',textAlign:'center',border:'1px solid var(--border2)'}}>
+                <div style={{fontSize:18,fontWeight:700,color:s.c,fontFamily:'var(--fd)'}}>{s.v}</div>
+                <div style={{fontSize:10,color:'var(--text3)',marginTop:4}}>{s.l}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* ── INCENTIVE CAPS TAB ── */}
+      {tab==='caps'&&(
+        <div style={{display:'flex',flexDirection:'column',gap:12}}>
+          <p style={{margin:0,fontSize:12,color:'var(--text3)'}}>For each project, set the <strong style={{color:'var(--text2)'}}>maximum incentive</strong> each assigned employee can earn. This is a hard cap — earned incentive will never exceed this amount regardless of completion %.</p>
+          <div style={{background:'rgba(224,122,107,0.05)',border:'1px solid rgba(224,122,107,0.18)',borderRadius:10,padding:'11px 15px',fontSize:12,color:'rgba(224,122,107,0.8)',display:'flex',gap:8,alignItems:'flex-start'}}>
+            <Icon n="alert" s={13}/><span>Incentive = min( cap × (completion% / 100), cap ). Employees see this figure in their Salary page in real time.</span>
+          </div>
+          {projects.map(p=>{
+            const team=users.filter(u=>p.assignedTeam?.includes(u.id));
+            const totalCap=team.reduce((s,u)=>s+(p.targetIncentive?.[u.id]||0),0);
+            return(
+              <div key={p.id} style={{background:'var(--card-bg)',border:'1px solid var(--border2)',borderRadius:14,overflow:'hidden'}}>
+                <div style={{padding:'13px 18px',borderBottom:'1px solid var(--border2)',display:'flex',justifyContent:'space-between',alignItems:'center',flexWrap:'wrap',gap:8}}>
+                  <div>
+                    <div style={{fontSize:13,fontWeight:600,color:'var(--text)'}}>{p.name}</div>
+                    <div style={{fontSize:11,color:'var(--text3)',marginTop:2}}>{p.client} · <Badge text={p.status} type={p.status}/> · {p.completion}% complete</div>
+                  </div>
+                  <div style={{display:'flex',gap:12,alignItems:'center'}}>
+                    <div style={{textAlign:'right'}}>
+                      <div style={{fontSize:9,color:'var(--text3)',textTransform:'uppercase'}}>Total Cap Pool</div>
+                      <div style={{fontSize:15,fontWeight:700,color:'var(--red)'}}>{fmt(totalCap)}</div>
+                    </div>
+                    {team.length>0&&<Btn size="sm" variant="secondary" onClick={()=>openCaps(p)}><Icon n="edit" s={12}/> Edit Caps</Btn>}
+                  </div>
+                </div>
+                {team.length===0?(
+                  <div style={{padding:'16px 18px',fontSize:12,color:'var(--text3)',fontStyle:'italic'}}>No team assigned yet. Use AI Assignment Engine to assign employees first.</div>
+                ):(
+                  team.map(u=>{
+                    const cap=p.targetIncentive?.[u.id]||0;
+                    const earned=Math.min(Math.round(cap*(p.completion/100)),cap);
+                    const pct=cap>0?Math.round((earned/cap)*100):0;
+                    return(
+                      <div key={u.id} style={{padding:'12px 18px',borderBottom:'1px solid var(--border3)',display:'flex',justifyContent:'space-between',alignItems:'center',flexWrap:'wrap',gap:8}}>
+                        <div style={{display:'flex',gap:10,alignItems:'center'}}>
+                          <div style={{width:30,height:30,borderRadius:'50%',background:'rgba(200,169,110,0.1)',display:'flex',alignItems:'center',justifyContent:'center',fontSize:11,fontWeight:700,color:'var(--gold)'}}>{u.avatar}</div>
+                          <div>
+                            <div style={{fontSize:13,fontWeight:500,color:'var(--text)'}}>{u.name}</div>
+                            <div style={{fontSize:10,color:'var(--text3)'}}>{u.dept} · {u.seniority}</div>
+                          </div>
+                        </div>
+                        <div style={{display:'flex',gap:14,alignItems:'center'}}>
+                          <div style={{textAlign:'right'}}>
+                            <div style={{fontSize:9,color:'var(--text3)',textTransform:'uppercase'}}>Incentive Cap</div>
+                            <div style={{fontSize:15,fontWeight:700,color:'var(--red)'}}>{cap>0?fmt(cap):<span style={{color:'var(--text3)'}}>Not set</span>}</div>
+                          </div>
+                          <div style={{textAlign:'right'}}>
+                            <div style={{fontSize:9,color:'var(--text3)',textTransform:'uppercase'}}>Earned So Far</div>
+                            <div style={{fontSize:14,fontWeight:600,color:pct>=100?'var(--green)':'var(--purple)'}}>{fmt(earned)}</div>
+                          </div>
+                          <div style={{width:80}}>
+                            <div style={{fontSize:9,color:'var(--text3)',marginBottom:3}}>Cap usage: {pct}%</div>
+                            <Bar v={pct} color={pct>=100?'var(--green)':pct>=70?'var(--gold)':'var(--blue)'} h={5}/>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })
+                )}
+              </div>
+            );
+          })}
+        </div>
+      )}
+
+      {/* Edit Salary Modal */}
+      <Modal open={!!editUser} onClose={()=>setEditUser(null)} title={`Edit Salary — ${editUser?.name}`} width={420}>
+        {editUser&&(
+          <div style={{display:'flex',flexDirection:'column',gap:14}}>
+            <div style={{background:'var(--surface-alpha2)',borderRadius:10,padding:'12px 16px',display:'flex',gap:10,alignItems:'center'}}>
+              <div style={{width:40,height:40,borderRadius:10,background:'rgba(200,169,110,0.12)',display:'flex',alignItems:'center',justifyContent:'center',fontSize:14,fontWeight:700,color:'var(--gold)'}}>{editUser.avatar}</div>
+              <div>
+                <div style={{fontSize:14,fontWeight:600,color:'var(--text)'}}>{editUser.name}</div>
+                <div style={{fontSize:11,color:'var(--text3)'}}>{editUser.dept} · <span style={{textTransform:'capitalize'}}>{editUser.seniority}</span></div>
+              </div>
+            </div>
+            <Fld label="Fixed Monthly Salary (₹)">
+              <Inp type="number" value={salaryDraft.salary} onChange={e=>setSalaryDraft(d=>({...d,salary:e.target.value}))} placeholder="55000"/>
+            </Fld>
+            <div style={{background:'rgba(200,169,110,0.06)',border:'1px solid rgba(200,169,110,0.15)',borderRadius:9,padding:'10px 14px',fontSize:11,color:'var(--text3)'}}>
+              Annual CTC (salary only): <span style={{color:'var(--gold)',fontWeight:600}}>{fmt((Number(salaryDraft.salary)||0)*12)}</span>
+            </div>
+            <div style={{display:'flex',gap:8,justifyContent:'flex-end',marginTop:4}}>
+              <Btn variant="secondary" onClick={()=>setEditUser(null)}>Cancel</Btn>
+              <Btn onClick={saveSalary} disabled={!salaryDraft.salary||Number(salaryDraft.salary)<=0}><Icon n="check" s={13}/> Save Salary</Btn>
+            </div>
+          </div>
+        )}
+      </Modal>
+
+      {/* Edit Caps Modal */}
+      <Modal open={!!editProj} onClose={()=>setEditProj(null)} title={`Edit Incentive Caps — ${editProj?.name}`} width={520}>
+        {editProj&&(
+          <div style={{display:'flex',flexDirection:'column',gap:14}}>
+            <div style={{background:'rgba(224,122,107,0.06)',border:'1px solid rgba(224,122,107,0.18)',borderRadius:9,padding:'10px 14px',fontSize:11,color:'rgba(224,122,107,0.8)',display:'flex',gap:7,alignItems:'flex-start'}}>
+              <Icon n="alert" s={12}/> This is the <strong>maximum</strong> each employee can earn from this project. Set to 0 to disable incentives for that employee.
+            </div>
+            {/* Project info */}
+            <div style={{background:'var(--surface-alpha2)',borderRadius:10,padding:'11px 14px'}}>
+              <div style={{fontSize:12,fontWeight:600,color:'var(--text)',marginBottom:4}}>{editProj.name}</div>
+              <div style={{display:'flex',gap:14,fontSize:11,color:'var(--text3)',flexWrap:'wrap'}}>
+                <span>Profit: <span style={{color:'var(--green)',fontWeight:600}}>{fmt(editProj.profit)}</span></span>
+                <span>Completion: <span style={{color:'var(--gold)',fontWeight:600}}>{editProj.completion}%</span></span>
+                <span>Status: <Badge text={editProj.status} type={editProj.status}/></span>
+              </div>
+            </div>
+            {/* Per-employee cap inputs */}
+            <div style={{display:'flex',flexDirection:'column',gap:10}}>
+              {users.filter(u=>editProj.assignedTeam?.includes(u.id)).map(u=>(
+                <div key={u.id} style={{display:'flex',alignItems:'center',gap:12,padding:'11px 14px',background:'var(--card-bg)',borderRadius:10,border:'1px solid var(--border2)'}}>
+                  <div style={{width:34,height:34,borderRadius:9,background:'rgba(200,169,110,0.1)',display:'flex',alignItems:'center',justifyContent:'center',fontSize:12,fontWeight:700,color:'var(--gold)',flexShrink:0}}>{u.avatar}</div>
+                  <div style={{flex:1}}>
+                    <div style={{fontSize:13,fontWeight:500,color:'var(--text)'}}>{u.name}</div>
+                    <div style={{fontSize:10,color:'var(--text3)'}}>{u.seniority} · Base: {fmt(u.salary)}/mo</div>
+                  </div>
+                  <div style={{display:'flex',flexDirection:'column',gap:3,alignItems:'flex-end'}}>
+                    <Fld label="Max Incentive (₹)">
+                      <Inp type="number" min="0" value={capDraft[u.id]??0} onChange={e=>setCapDraft(d=>({...d,[u.id]:e.target.value}))} style={{width:130,textAlign:'right'}} placeholder="0"/>
+                    </Fld>
+                    {Number(capDraft[u.id])>0&&<div style={{fontSize:9,color:'var(--text3)'}}>Effective now: {fmt(Math.min(Math.round(Number(capDraft[u.id])*(editProj.completion/100)),Number(capDraft[u.id])))}</div>}
+                  </div>
+                </div>
+              ))}
+            </div>
+            {/* Pool summary */}
+            <div style={{background:'rgba(200,169,110,0.05)',border:'1px solid rgba(200,169,110,0.12)',borderRadius:9,padding:'10px 14px',display:'flex',justifyContent:'space-between',alignItems:'center',flexWrap:'wrap',gap:8}}>
+              <span style={{fontSize:12,color:'var(--text3)'}}>Total cap pool</span>
+              <span style={{fontSize:16,fontWeight:700,color:'var(--gold)',fontFamily:'var(--fd)'}}>{fmt(Object.values(capDraft).reduce((a,v)=>a+Number(v||0),0))}</span>
+            </div>
+            <div style={{display:'flex',gap:8,justifyContent:'flex-end',marginTop:4}}>
+              <Btn variant="secondary" onClick={()=>setEditProj(null)}>Cancel</Btn>
+              <Btn onClick={saveCaps}><Icon n="check" s={13}/> Save Incentive Caps</Btn>
+            </div>
+          </div>
+        )}
+      </Modal>
+    </div>
+  );
+};
+
+// ═══════════════════════════════════════════════════════════════════════════
+// TEAM PAGE — with skill profiles & utilization
+// ═══════════════════════════════════════════════════════════════════════════
+const TeamPage=({users,projects,timesheets})=>{
+  const [selected,setSelected]=useState(null);
+  return(
+    <div style={{display:'flex',flexDirection:'column',gap:16}}>
+      <p style={{margin:0,fontSize:12,color:'var(--text3)'}}>Team skill profiles, utilization and project assignments — used by the AI assignment engine</p>
+      <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(290px,1fr))',gap:13}}>
+        {users.filter(u=>u.role!=='admin').map(u=>{
+          const ts=timesheets.filter(t=>t.userId===u.id);
+          const projs=projects.filter(p=>p.assignedTeam?.includes(u.id));
+          const bh=ts.reduce((a,t)=>a+t.billingHours,0);
+          const th=ts.reduce((a,t)=>a+t.billingHours+t.nonBillingHours,0);
+          const br=th?Math.round((bh/th)*100):0;
+          const inc=projs.reduce((s,p)=>s+Math.round((p.targetIncentive?.[u.id]||0)*(p.completion/100)),0);
+          const ut=calcUtilization(u.id,timesheets,projects);
+          const utCol=ut<=50?'var(--green)':ut<=75?'var(--gold)':ut<=90?'var(--orange)':'var(--red)';
+          const topSkills=u.skills.sort((a,b)=>b.level-a.level).slice(0,4);
+          return(
+            <div key={u.id} style={{background:'var(--card-bg)',border:'1px solid var(--border2)',borderRadius:15,padding:'17px',cursor:'pointer',transition:'border-color 0.18s'}} onClick={()=>setSelected(selected===u.id?null:u.id)}>
+              <div style={{display:'flex',gap:11,alignItems:'center',marginBottom:12}}>
+                <div style={{width:42,height:42,borderRadius:11,background:'linear-gradient(135deg,rgba(200,169,110,0.16),rgba(200,169,110,0.04))',border:'1px solid rgba(200,169,110,0.18)',display:'flex',alignItems:'center',justifyContent:'center',fontSize:14,fontWeight:700,color:'var(--gold)'}}>{u.avatar}</div>
+                <div style={{flex:1}}>
+                  <div style={{fontSize:14,fontWeight:700,color:'var(--text)'}}>{u.name}</div>
+                  <div style={{fontSize:11,color:'var(--text3)'}}>{u.dept} · <span style={{textTransform:'capitalize'}}>{u.seniority}</span> · {u.expYears}yrs</div>
+                </div>
+                <Badge text={u.role} type={u.role}/>
+              </div>
+              <div style={{marginBottom:10}}><Util pct={ut}/></div>
+              <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:7,marginBottom:11}}>
+                {[{l:'Projects',v:projs.length},{l:'Bill Hrs',v:`${bh}h`},{l:'Bill Rate',v:`${br}%`},{l:'Incentives',v:fmt(inc)}].map(s=>(
+                  <div key={s.l} style={{background:'var(--surface-alpha2)',borderRadius:8,padding:'6px 9px'}}><div style={{fontSize:9,color:'var(--text3)',textTransform:'uppercase'}}>{s.l}</div><div style={{fontSize:13,fontWeight:700,color:'var(--gold)'}}>{s.v}</div></div>
+                ))}
+              </div>
+              {/* Top skills */}
+              <div style={{display:'flex',flexWrap:'wrap',gap:4,marginBottom:8}}>
+                {topSkills.map(s=>{
+                  const sk=SKILLS_DB.find(sk=>sk.id===s.skillId);
+                  const col=s.level>=4?'var(--green)':s.level>=3?'var(--gold)':'var(--text3)';
+                  return sk?<span key={s.skillId} style={{fontSize:9,padding:'2px 7px',borderRadius:5,background:'var(--surface-alpha2)',color:col,border:'1px solid var(--border2)'}}>{sk.name} L{s.level}</span>:null;
+                })}
+                {u.skills.length>4&&<span style={{fontSize:9,padding:'2px 7px',borderRadius:5,background:'var(--surface-alpha2)',color:'var(--text3)'}}>+{u.skills.length-4} more</span>}
+              </div>
+              {/* Expand */}
+              {selected===u.id&&(
+                <div style={{marginTop:10,paddingTop:10,borderTop:'1px solid var(--border2)',animation:'fadeUp 0.2s ease'}}>
+                  <div style={{fontSize:10,color:'var(--text3)',textTransform:'uppercase',letterSpacing:'0.08em',marginBottom:8}}>Full Skill Profile</div>
+                  <div style={{display:'flex',flexDirection:'column',gap:5}}>
+                    {u.skills.map(s=>{
+                      const sk=SKILLS_DB.find(sk=>sk.id===s.skillId);
+                      const col=s.level>=4?'var(--green)':s.level>=3?'var(--gold)':s.level>=2?'var(--blue)':'var(--text3)';
+                      return sk?(
+                        <div key={s.skillId}>
+                          <div style={{display:'flex',justifyContent:'space-between',fontSize:11,marginBottom:3}}>
+                            <span style={{color:'var(--text2)'}}>{sk.name}</span>
+                            <span style={{color:col,fontWeight:600}}>{LEVEL_LABELS[s.level]}</span>
+                          </div>
+                          <Bar v={s.level} max={5} color={col} h={4}/>
+                        </div>
+                      ):null;
+                    })}
+                  </div>
+                  <div style={{marginTop:10}}>
+                    <div style={{fontSize:10,color:'var(--text3)',textTransform:'uppercase',letterSpacing:'0.08em',marginBottom:6}}>Active Projects</div>
+                    {projs.map(p=>(
+                      <div key={p.id} style={{display:'flex',justifyContent:'space-between',fontSize:11,padding:'4px 0',borderBottom:'1px solid var(--border3)'}}>
+                        <span style={{color:'var(--text2)',overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap',maxWidth:160}}>{p.name}</span>
+                        <span style={{color:p.completion>=50?'var(--green)':'var(--gold)',fontWeight:600}}>{p.completion}%</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+              <div style={{textAlign:'center',fontSize:10,color:'var(--text3)',marginTop:6}}>{selected===u.id?'▲ Collapse':'▼ View skill profile'}</div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+};
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+</script>
+</body>
+</html>
